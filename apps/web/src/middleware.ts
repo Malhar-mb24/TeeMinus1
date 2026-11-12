@@ -25,9 +25,33 @@ const isProtectedApiRoute = createRouteMatcher([
   "/api/export(.*)",
 ]);
 
+function buildOriginUrl(req: NextRequest, pathname: string): URL {
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  const protocol =
+    req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol.replace(":", "");
+  const origin = host ? `${protocol}://${host}` : req.nextUrl.origin;
+  return new URL(pathname, origin);
+}
+
 const clerkHandler = clerkMiddleware(async (auth, req) => {
-  if (isProtectedPageRoute(req) || isProtectedApiRoute(req)) {
-    await auth.protect();
+  if (isProtectedApiRoute(req)) {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+    return NextResponse.next();
+  }
+
+  if (isProtectedPageRoute(req)) {
+    const { userId } = await auth();
+    if (!userId) {
+      const signInUrl = buildOriginUrl(req, "/sign-in");
+      signInUrl.searchParams.set("redirect_url", req.nextUrl.pathname);
+      return NextResponse.redirect(signInUrl);
+    }
   }
 });
 
@@ -42,11 +66,7 @@ export default function middleware(req: NextRequest, event: NextFetchEvent) {
       );
     }
     if (isProtectedPageRoute(req)) {
-      const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
-      const protocol =
-        req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol.replace(":", "");
-      const origin = host ? `${protocol}://${host}` : req.nextUrl.origin;
-      const signInUrl = new URL("/sign-in", origin);
+      const signInUrl = buildOriginUrl(req, "/sign-in");
       signInUrl.searchParams.set("reason", "auth_unconfigured");
       return NextResponse.redirect(signInUrl);
     }
