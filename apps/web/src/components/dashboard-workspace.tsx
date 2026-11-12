@@ -64,6 +64,7 @@ export function DashboardWorkspace({
   const [habits, setHabits] = React.useState(initialHabits);
   const [tasks, setTasks] = React.useState(initialTasks);
   const [xpToast, setXpToast] = React.useState<string | null>(null);
+  const [actionError, setActionError] = React.useState<string | null>(null);
   const [nowMs, setNowMs] = React.useState(() => Date.now());
 
   React.useEffect(() => {
@@ -91,19 +92,24 @@ export function DashboardWorkspace({
           : "idle";
 
   async function toggleHabit(habit: HabitWithStatsDto) {
+    setActionError(null);
     const todayEntry = habit.entries.find(
       (e) => e.localDate === analytics.todayDate
     );
     const isCompleted = todayEntry?.status === "completed";
-    const res = await fetch(`/api/habits/${habit.id}/checkin`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        localDate: analytics.todayDate,
-        action: isCompleted ? "undo" : "increment",
-      }),
-    });
-    if (res.ok) {
+    try {
+      const res = await fetch(`/api/habits/${habit.id}/checkin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          localDate: analytics.todayDate,
+          action: isCompleted ? "undo" : "increment",
+        }),
+      });
+      if (!res.ok) {
+        setActionError("Unable to update habit check-in.");
+        return;
+      }
       const data = (await res.json()) as {
         habit: HabitWithStatsDto;
         xpAwarded: number;
@@ -115,22 +121,31 @@ export function DashboardWorkspace({
       if (data.xpAwarded > 0) {
         setXpToast(`+${data.xpAwarded} XP earned!`);
       }
+    } catch {
+      setActionError("Network error while checking in habit.");
     }
   }
 
   async function toggleTask(task: TaskDto) {
+    setActionError(null);
     const nextStatus = task.status === "completed" ? "todo" : "completed";
-    const res = await fetch(`/api/tasks/${task.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: nextStatus }),
-    });
-    if (res.ok) {
+    try {
+      const res = await fetch(`/api/tasks/${task.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: nextStatus }),
+      });
+      if (!res.ok) {
+        setActionError("Unable to update task status.");
+        return;
+      }
       const data = (await res.json()) as { task: TaskDto };
       setTasks((prev) =>
         prev.map((item) => (item.id === task.id ? data.task : item))
       );
       router.refresh();
+    } catch {
+      setActionError("Network error while updating task.");
     }
   }
 
@@ -190,6 +205,15 @@ export function DashboardWorkspace({
         >
           <Sparkles className="h-4 w-4" />
           {xpToast}
+        </div>
+      )}
+
+      {actionError && (
+        <div
+          role="alert"
+          className="rounded-xl border border-rose/30 bg-rose/10 px-4 py-2 text-xs font-medium text-rose"
+        >
+          {actionError}
         </div>
       )}
 

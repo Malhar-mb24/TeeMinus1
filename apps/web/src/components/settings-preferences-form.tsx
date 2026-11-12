@@ -7,6 +7,7 @@ import {
   type UserPreferencesDto,
 } from "@ember/shared";
 import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -22,6 +23,7 @@ export function SettingsPreferencesForm({
   initialPreferences,
   disabled = false,
 }: SettingsPreferencesFormProps) {
+  const router = useRouter();
   const [timezone, setTimezone] = React.useState(
     initialPreferences?.timezone ?? "UTC"
   );
@@ -99,6 +101,7 @@ export function SettingsPreferencesForm({
       }
 
       window.dispatchEvent(new Event("ember-reminders-updated"));
+      router.refresh();
       setFeedback({
         type: "success",
         message: "Preferences saved to your Ember profile.",

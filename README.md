@@ -75,6 +75,7 @@ ember/
 
 - [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — System architecture, monorepo boundaries, and UI shell
 - [`docs/SETUP.md`](./docs/SETUP.md) — Local environment, Neon PostgreSQL, Clerk, and Vercel deployment steps
+- [`docs/RELEASE_CHECKLIST.md`](./docs/RELEASE_CHECKLIST.md) — Production go-live runbook, Clerk prod config, Neon recovery, and rollback plan
 - [`docs/DECISIONS.md`](./docs/DECISIONS.md) — Architectural decision records for Batch 00
 - [`docs/SECURITY.md`](./docs/SECURITY.md) — Authentication, ownership enforcement, and secret handling
 - [`docs/THIRD_PARTY_NOTICES.md`](./docs/THIRD_PARTY_NOTICES.md) — Reference repository audit & licence compliance log

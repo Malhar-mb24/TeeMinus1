@@ -81,6 +81,9 @@ export async function POST(request: Request) {
         { status: error.status, headers: corsHeaders }
       );
     }
-    throw error;
+    return NextResponse.json(
+      { error: "Unable to complete device pairing" },
+      { status: 500, headers: corsHeaders }
+    );
   }
 }

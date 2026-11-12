@@ -39,6 +39,22 @@
   }
 }
 
+[data-theme="obsidian"] {
+  --color-canvas: #050507;
+  --color-surface: #0b0c10;
+  --color-surface-elevated: #12141a;
+  --color-surface-hover: #1a1d24;
+  --color-border-subtle: #1f222a;
+}
+
+[data-theme="slate"] {
+  --color-canvas: #0d131a;
+  --color-surface: #141c26;
+  --color-surface-elevated: #1b2532;
+  --color-surface-hover: #233040;
+  --color-border-subtle: #273446;
+}
+
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }

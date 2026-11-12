@@ -18,6 +18,8 @@ interface ReminderApiResponse {
     todayFocusMinutes: number;
     dailyFocusGoalMinutes: number;
     incompleteHabitsTodayCount: number;
+    isFocusRunning?: boolean;
+    activeFocusMinutesElapsed?: number;
   };
 }
 
@@ -106,8 +108,8 @@ export function ReminderEngine() {
       const due = evaluateDueReminders({
         settings: data.settings,
         currentHm,
-        activeFocusMinutesElapsed: 0,
-        isFocusRunning: false,
+        activeFocusMinutesElapsed: data.context.activeFocusMinutesElapsed ?? 0,
+        isFocusRunning: Boolean(data.context.isFocusRunning),
         todayFocusMinutes: data.context.todayFocusMinutes,
         dailyFocusGoalMinutes: data.context.dailyFocusGoalMinutes,
         incompleteHabitsTodayCount: data.context.incompleteHabitsTodayCount,

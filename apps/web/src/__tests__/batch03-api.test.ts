@@ -6,6 +6,7 @@ const mockUpsertReminderSettings = vi.fn();
 const mockGetFocusIntelligence = vi.fn();
 const mockGetAnalytics = vi.fn();
 const mockGetHabits = vi.fn();
+const mockGetActiveSession = vi.fn();
 
 vi.mock("@/lib/api-auth", () => ({
   requireAuthenticatedApiSession: (...args: unknown[]) => mockRequireApi(...args),
@@ -20,6 +21,7 @@ vi.mock("@ember/database", async () => {
     getFocusIntelligenceForUser: (...args: unknown[]) => mockGetFocusIntelligence(...args),
     getAnalyticsSummaryForUser: (...args: unknown[]) => mockGetAnalytics(...args),
     listHabitsWithStatsForUser: (...args: unknown[]) => mockGetHabits(...args),
+    getActiveFocusSessionForUser: (...args: unknown[]) => mockGetActiveSession(...args),
   };
 });
 
@@ -126,5 +128,61 @@ describe("Batch 03 API routes: /api/reminders & /api/intelligence", () => {
       "Asia/Kolkata",
       14
     );
+  });
+
+  it("includes live active focus elapsed time and scheduled incomplete habits on GET /api/reminders", async () => {
+    mockRequireApi.mockResolvedValue(AUTH_OK);
+    mockGetReminderSettings.mockResolvedValue({
+      notificationsEnabled: true,
+      focusReminderEnabled: true,
+      focusReminderTime: "09:30",
+      breakReminderEnabled: true,
+      breakIntervalMinutes: 50,
+      dailyGoalReminderEnabled: false,
+      dailyGoalReminderTime: "18:00",
+      habitReminderEnabled: true,
+      habitReminderTime: "20:00",
+      quietHoursEnabled: true,
+      quietHoursStart: "22:00",
+      quietHoursEnd: "07:30",
+      updatedAt: null,
+    });
+    mockGetAnalytics.mockResolvedValue({
+      todayDate: "2026-11-12", // Thursday (dayOfWeek = 4)
+      daily: { focusMinutes: 10, dailyGoalMinutes: 120 },
+    });
+    mockGetHabits.mockResolvedValue([
+      {
+        id: "hab-1",
+        archived: false,
+        scheduledDays: [4],
+        entries: [],
+      },
+      {
+        id: "hab-2",
+        archived: false,
+        scheduledDays: [4],
+        entries: [{ localDate: "2026-11-12", status: "completed" }],
+      },
+    ]);
+    mockGetActiveSession.mockResolvedValue({
+      id: "sess-1",
+      status: "running",
+      accumulatedSeconds: 3000, // 50 minutes
+      lastResumedAt: new Date(Date.now() - 120_000).toISOString(), // +2 minutes
+    });
+
+    const res = await getReminders();
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      context: {
+        isFocusRunning: boolean;
+        activeFocusMinutesElapsed: number;
+        incompleteHabitsTodayCount: number;
+      };
+    };
+    expect(body.context.isFocusRunning).toBe(true);
+    expect(body.context.activeFocusMinutesElapsed).toBeGreaterThanOrEqual(51);
+    expect(body.context.incompleteHabitsTodayCount).toBe(1);
   });
 });

@@ -28,6 +28,7 @@ interface AppShellProps {
   databaseReady: boolean;
   level?: number;
   totalXp?: number;
+  theme?: string;
 }
 
 interface NavItem {
@@ -60,11 +61,15 @@ export function AppShell({
   databaseReady,
   level = 1,
   totalXp = 0,
+  theme = "ember-dark",
 }: AppShellProps) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-dvh bg-canvas text-text-primary flex flex-col md:flex-row">
+    <div
+      data-theme={theme}
+      className="min-h-dvh bg-canvas text-text-primary flex flex-col md:flex-row"
+    >
       {/* Desktop Sidebar Rail */}
       <aside
         aria-label="Primary navigation"

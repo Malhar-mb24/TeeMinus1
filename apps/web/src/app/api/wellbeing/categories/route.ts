@@ -37,6 +37,9 @@ export async function PUT(request: Request) {
     if (error instanceof WellbeingServiceError) {
       return NextResponse.json({ error: error.message, code: error.code }, { status: error.status });
     }
-    throw error;
+    return NextResponse.json(
+      { error: "Unable to update category classification" },
+      { status: 500 }
+    );
   }
 }

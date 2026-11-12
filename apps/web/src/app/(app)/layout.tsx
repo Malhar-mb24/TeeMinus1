@@ -15,6 +15,7 @@ export default async function ProtectedAppLayout({
 
   let level = 1;
   let totalXp = 0;
+  const theme = session.userContext?.preferences.theme ?? "ember-dark";
 
   if (session.databaseReady && session.userContext) {
     try {
@@ -37,6 +38,7 @@ export default async function ProtectedAppLayout({
       databaseReady={session.databaseReady}
       level={level}
       totalXp={totalXp}
+      theme={theme}
     >
       {children}
     </AppShell>

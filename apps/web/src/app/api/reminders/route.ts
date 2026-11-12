@@ -1,5 +1,6 @@
 import { requireAuthenticatedApiSession } from "@/lib/api-auth";
 import {
+  getActiveFocusSessionForUser,
   getAnalyticsSummaryForUser,
   getReminderSettingsForUser,
   listHabitsWithStatsForUser,
@@ -15,10 +16,11 @@ export async function GET() {
   if (!authResult.ok) return authResult.response;
 
   const { profile, preferences } = authResult.userContext;
-  const [settings, analytics, habits] = await Promise.all([
+  const [settings, analytics, habits, activeSession] = await Promise.all([
     getReminderSettingsForUser(profile.id),
     getAnalyticsSummaryForUser(profile.id, preferences.timezone),
     listHabitsWithStatsForUser(profile.id, preferences.timezone),
+    getActiveFocusSessionForUser(profile.id),
   ]);
 
   const todayDow = getDayOfWeekFromDateKey(analytics.todayDate);
@@ -28,6 +30,21 @@ export async function GET() {
     return !todayEntry || todayEntry.status !== "completed";
   }).length;
 
+  let isFocusRunning = false;
+  let activeFocusMinutesElapsed = 0;
+  if (activeSession && activeSession.status === "running") {
+    isFocusRunning = true;
+    const resumedMs = activeSession.lastResumedAt
+      ? Date.parse(activeSession.lastResumedAt)
+      : Date.now();
+    const extraSec = Number.isFinite(resumedMs)
+      ? Math.max(0, Math.floor((Date.now() - resumedMs) / 1000))
+      : 0;
+    activeFocusMinutesElapsed = Math.floor(
+      (activeSession.accumulatedSeconds + extraSec) / 60
+    );
+  }
+
   return NextResponse.json({
     settings,
     context: {
@@ -36,6 +53,8 @@ export async function GET() {
       todayFocusMinutes: analytics.daily.focusMinutes,
       dailyFocusGoalMinutes: analytics.daily.dailyGoalMinutes,
       incompleteHabitsTodayCount,
+      isFocusRunning,
+      activeFocusMinutesElapsed,
     },
   });
 }

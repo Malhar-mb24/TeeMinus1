@@ -105,6 +105,9 @@ export async function POST(request: Request) {
         { status: error.status, headers: corsHeaders }
       );
     }
-    throw error;
+    return NextResponse.json(
+      { error: "Unable to sync wellbeing data" },
+      { status: 500, headers: corsHeaders }
+    );
   }
 }

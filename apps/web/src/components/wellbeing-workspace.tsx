@@ -69,10 +69,16 @@ export function WellbeingWorkspace({ initialSummary }: WellbeingWorkspaceProps) 
     typeof window !== "undefined" ? window.location.origin : "https://ember-nine-flame.vercel.app";
 
   async function refreshSummary(targetDays: 7 | 14 = rangeDays) {
-    const res = await fetch(`/api/wellbeing?days=${targetDays}`, { cache: "no-store" });
-    if (res.ok) {
+    try {
+      const res = await fetch(`/api/wellbeing?days=${targetDays}`, { cache: "no-store" });
+      if (!res.ok) {
+        setFeedback("Unable to refresh wellbeing data right now.");
+        return;
+      }
       const next = (await res.json()) as WellbeingSummaryDto;
       setSummary(next);
+    } catch {
+      setFeedback("Network error while refreshing wellbeing data.");
     }
   }
 
@@ -156,7 +162,11 @@ export function WellbeingWorkspace({ initialSummary }: WellbeingWorkspaceProps) 
       if (res.ok) {
         await refreshSummary();
         setFeedback(`Classified ${item.displayName} as ${category}.`);
+      } else {
+        setFeedback("Unable to update classification rule.");
       }
+    } catch {
+      setFeedback("Network error while updating category.");
     } finally {
       setBusyAction(null);
     }
@@ -172,7 +182,11 @@ export function WellbeingWorkspace({ initialSummary }: WellbeingWorkspaceProps) 
       if (res.ok) {
         await refreshSummary();
         setFeedback(`Revoked access for "${deviceName}".`);
+      } else {
+        setFeedback(`Unable to revoke "${deviceName}".`);
       }
+    } catch {
+      setFeedback("Network error while revoking device.");
     } finally {
       setBusyAction(null);
     }
@@ -193,7 +207,11 @@ export function WellbeingWorkspace({ initialSummary }: WellbeingWorkspaceProps) 
         setFeedback(
           `Deleted ${result.deletedWebsiteRows} website rows and ${result.deletedAppRows} desktop app rows.`
         );
+      } else {
+        setFeedback("Unable to delete synced usage data.");
       }
+    } catch {
+      setFeedback("Network error while deleting synced usage data.");
     } finally {
       setBusyAction(null);
     }
@@ -312,11 +330,14 @@ export function WellbeingWorkspace({ initialSummary }: WellbeingWorkspaceProps) 
         <Card className="lg:col-span-5 flex flex-col justify-between">
           <CardHeader>
             <CardDescription className="text-xs uppercase tracking-wider text-text-muted">
-              Today&apos;s Screen Time ({summary.todayDate})
+              Today&apos;s Tracked Streams ({summary.todayDate})
             </CardDescription>
             <CardTitle className="text-4xl font-bold tracking-tight tabular-nums">
               {formatDurationCompact(summary.todayTotalSeconds)}
             </CardTitle>
+            <p className="text-[11px] text-text-muted">
+              Sum of browser host and Windows desktop app captures shown separately below.
+            </p>
           </CardHeader>
           <CardContent className="space-y-5">
             <div className="grid grid-cols-3 gap-2.5">
