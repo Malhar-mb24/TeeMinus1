@@ -1,0 +1,24 @@
+{
+  "name": "ember",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.22.0",
+  "engines": {
+    "node": ">=20.18.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @ember/web dev",
+    "build": "pnpm --filter @ember/shared build && pnpm --filter @ember/database build && pnpm --filter @ember/web build && pnpm --filter @ember/extension build",
+    "build:web": "pnpm --filter @ember/web build",
+    "build:extension": "pnpm --filter @ember/extension build",
+    "lint": "pnpm --filter @ember/web lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm --filter @ember/shared test && pnpm --filter @ember/database test && pnpm --filter @ember/web test",
+    "test:unit": "pnpm --filter @ember/shared test && pnpm --filter @ember/database test && pnpm --filter @ember/web test",
+    "test:e2e": "pnpm --filter @ember/web test:e2e",
+    "db:generate": "pnpm --filter @ember/database db:generate",
+    "db:migrate": "pnpm --filter @ember/database db:migrate",
+    "db:push": "pnpm --filter @ember/database db:push",
+    "db:health": "pnpm --filter @ember/database db:health"
+  }
+}

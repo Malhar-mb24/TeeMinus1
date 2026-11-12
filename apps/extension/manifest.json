@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Ember Focus & Wellbeing Companion",
+  "version": "0.1.0",
+  "description": "Privacy-first active tab time tracker for Ember. Hostname-only local aggregation; syncs only with explicit user consent.",
+  "permissions": ["tabs", "idle", "storage", "alarms"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Ember Wellbeing Companion (Foundation)"
+  }
+}
