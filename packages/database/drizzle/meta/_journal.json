@@ -15,6 +15,13 @@
       "when": 1794460815300,
       "tag": "0001_soft_changeling",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794482011091,
+      "tag": "0002_rainy_tusk",
+      "breakpoints": true
     }
   ]
 }

@@ -1,14 +1,20 @@
 {
   "name": "@ember/extension",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json && node -e \"const fs=require('fs');fs.mkdirSync('dist',{recursive:true});fs.copyFileSync('manifest.json','dist/manifest.json');\"",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "build": "node build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ember/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.323",
-    "typescript": "^5.8.3"
+    "esbuild": "^0.27.2",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
   }
 }

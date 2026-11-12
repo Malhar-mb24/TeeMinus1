@@ -43,7 +43,7 @@ const DESKTOP_NAV_ITEMS: NavItem[] = [
   { label: "Tasks & Plan", mobileLabel: "Tasks", href: "/tasks", icon: CheckSquare },
   { label: "Habits", mobileLabel: "Habits", href: "/habits", icon: Grid2x2Check },
   { label: "Insights", mobileLabel: "Insights", href: "/insights", icon: BarChart3 },
-  { label: "Wellbeing", mobileLabel: "Wellbeing", icon: ShieldCheck, batchTag: "B04" },
+  { label: "Wellbeing", mobileLabel: "Wellbeing", href: "/wellbeing", icon: ShieldCheck },
   { label: "Settings", mobileLabel: "Settings", href: "/settings", icon: Settings },
 ];
 
@@ -217,7 +217,7 @@ export function AppShell({
                 key={item.label}
                 href={item.href!}
                 className={cn(
-                  "flex min-h-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-1 text-[11px] font-medium transition-colors",
+                  "flex min-h-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-1 text-[10px] font-medium transition-colors",
                   isActive
                     ? "bg-flame/15 text-flame-soft"
                     : "text-text-secondary hover:text-text-primary"

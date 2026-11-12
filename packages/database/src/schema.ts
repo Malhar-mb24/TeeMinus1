@@ -60,7 +60,7 @@ export const userPreferences = pgTable(
 );
 
 /**
- * Placeholder table for Chrome MV3 extension pairing and revocable hashed tokens (Batch 04).
+ * Extension & Windows desktop tracker devices with revocable SHA-256 hashed bearer tokens.
  */
 export const extensionDevices = pgTable(
   "extension_devices",
@@ -70,6 +70,7 @@ export const extensionDevices = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     deviceName: text("device_name").notNull(),
+    deviceType: text("device_type").notNull().default("chrome_extension"),
     browser: text("browser").notNull().default("chrome"),
     tokenHash: text("token_hash").notNull(),
     status: text("status").notNull().default("pending"),
@@ -82,6 +83,115 @@ export const extensionDevices = pgTable(
     uniqueIndex("extension_devices_token_hash_uidx").on(table.tokenHash),
     index("extension_devices_user_id_idx").on(table.userId),
     index("extension_devices_status_idx").on(table.status),
+  ]
+);
+
+/**
+ * Short-lived one-time pairing codes hashed at rest for device linking.
+ */
+export const devicePairingCodes = pgTable(
+  "device_pairing_codes",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    codeHash: text("code_hash").notNull(),
+    deviceType: text("device_type").notNull().default("chrome_extension"),
+    suggestedName: text("suggested_name"),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    consumedAt: timestamp("consumed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("device_pairing_codes_code_hash_uidx").on(table.codeHash),
+    index("device_pairing_codes_user_expires_idx").on(table.userId, table.expiresAt),
+  ]
+);
+
+/**
+ * Daily website hostname totals aggregated per paired extension device (no full URLs/paths).
+ */
+export const websiteUsageDaily = pgTable(
+  "website_usage_daily",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    deviceId: uuid("device_id")
+      .notNull()
+      .references(() => extensionDevices.id, { onDelete: "cascade" }),
+    localDate: text("local_date").notNull(),
+    hostname: text("hostname").notNull(),
+    activeSeconds: integer("active_seconds").notNull().default(0),
+    visitCount: integer("visit_count").notNull().default(1),
+    lastUpdatedAt: timestamp("last_updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("website_usage_daily_device_date_host_uidx").on(
+      table.userId,
+      table.deviceId,
+      table.localDate,
+      table.hostname
+    ),
+    index("website_usage_daily_user_date_idx").on(table.userId, table.localDate),
+  ]
+);
+
+/**
+ * Daily Windows desktop application usage aggregated per paired tracker device.
+ */
+export const appUsageDaily = pgTable(
+  "app_usage_daily",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    deviceId: uuid("device_id")
+      .notNull()
+      .references(() => extensionDevices.id, { onDelete: "cascade" }),
+    localDate: text("local_date").notNull(),
+    appName: text("app_name").notNull(),
+    displayName: text("display_name").notNull(),
+    activeSeconds: integer("active_seconds").notNull().default(0),
+    launchCount: integer("launch_count").notNull().default(1),
+    lastUpdatedAt: timestamp("last_updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("app_usage_daily_device_date_app_uidx").on(
+      table.userId,
+      table.deviceId,
+      table.localDate,
+      table.appName
+    ),
+    index("app_usage_daily_user_date_idx").on(table.userId, table.localDate),
+  ]
+);
+
+/**
+ * User-defined productive/neutral/distracting classifications for hostnames and desktop apps.
+ */
+export const websiteCategories = pgTable(
+  "website_categories",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    targetType: text("target_type").notNull().default("website"),
+    pattern: text("pattern").notNull(),
+    category: text("category").notNull().default("neutral"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("website_categories_user_target_pattern_uidx").on(
+      table.userId,
+      table.targetType,
+      table.pattern
+    ),
   ]
 );
 
@@ -319,6 +429,10 @@ export type NewDbUser = typeof users.$inferInsert;
 export type DbUserPreferences = typeof userPreferences.$inferSelect;
 export type NewDbUserPreferences = typeof userPreferences.$inferInsert;
 export type DbExtensionDevice = typeof extensionDevices.$inferSelect;
+export type DbDevicePairingCode = typeof devicePairingCodes.$inferSelect;
+export type DbWebsiteUsageDaily = typeof websiteUsageDaily.$inferSelect;
+export type DbAppUsageDaily = typeof appUsageDaily.$inferSelect;
+export type DbWebsiteCategory = typeof websiteCategories.$inferSelect;
 export type DbTask = typeof tasks.$inferSelect;
 export type DbFocusSession = typeof focusSessions.$inferSelect;
 export type DbHabit = typeof habits.$inferSelect;

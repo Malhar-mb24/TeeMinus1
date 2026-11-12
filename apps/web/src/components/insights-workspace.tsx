@@ -2,22 +2,28 @@
 
 import {
   COSMETIC_UNLOCK_RULES,
+  formatDurationCompact,
   formatMinutesLabel,
   getDayOfWeekFromDateKey,
   type AnalyticsSummaryDto,
   type CompanionStyle,
   type GamificationSummaryDto,
+  type WellbeingSummaryDto,
 } from "@ember/shared";
 import {
+  ArrowRight,
   Award,
   CheckCircle2,
   Flame,
+  Globe,
   Lock,
+  Monitor,
   Sparkles,
   Target,
   Timer,
   Trophy,
 } from "lucide-react";
+import Link from "next/link";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { FlameCompanion } from "./flame-companion";
@@ -35,6 +41,7 @@ interface InsightsWorkspaceProps {
   analytics: AnalyticsSummaryDto;
   initialGamification: GamificationSummaryDto;
   initialCompanionStyle: CompanionStyle;
+  wellbeing?: WellbeingSummaryDto;
 }
 
 const HEATMAP_DAY_HEADERS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
@@ -51,6 +58,7 @@ export function InsightsWorkspace({
   analytics,
   initialGamification,
   initialCompanionStyle,
+  wellbeing,
 }: InsightsWorkspaceProps) {
   const [selectedStyle, setSelectedStyle] =
     React.useState<CompanionStyle>(initialCompanionStyle);
@@ -147,6 +155,70 @@ export function InsightsWorkspace({
           </CardContent>
         </Card>
       </div>
+
+      {/* Unified Focus + Chrome Websites + Windows Desktop Screen Time */}
+      {wellbeing && (
+        <Card>
+          <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <CardTitle className="text-base">
+                Unified Screen Time &amp; Focus Balance
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Combined browser, desktop app, and Ember focus totals over the last{" "}
+                {wellbeing.rangeDays} days
+              </CardDescription>
+            </div>
+            <Link
+              href="/wellbeing"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-flame-soft hover:underline"
+            >
+              Open Digital Wellbeing
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </CardHeader>
+          <CardContent className="grid gap-3 sm:grid-cols-4">
+            <div className="rounded-xl border border-border-subtle bg-surface-elevated p-3">
+              <div className="flex items-center gap-1.5 text-xs text-text-muted">
+                <Globe className="h-3.5 w-3.5 text-sky" />
+                Websites Today
+              </div>
+              <p className="mt-1 text-lg font-semibold tabular-nums">
+                {formatDurationCompact(wellbeing.todayWebsiteSeconds)}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border-subtle bg-surface-elevated p-3">
+              <div className="flex items-center gap-1.5 text-xs text-text-muted">
+                <Monitor className="h-3.5 w-3.5 text-flame-soft" />
+                Windows Apps Today
+              </div>
+              <p className="mt-1 text-lg font-semibold tabular-nums">
+                {formatDurationCompact(wellbeing.todayDesktopSeconds)}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border-subtle bg-surface-elevated p-3">
+              <div className="flex items-center gap-1.5 text-xs text-text-muted">
+                <Sparkles className="h-3.5 w-3.5 text-emerald" />
+                Productive Share (7d)
+              </div>
+              <p className="mt-1 text-lg font-semibold tabular-nums">
+                {formatDurationCompact(wellbeing.categoryBreakdown.productiveSeconds)}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border-subtle bg-surface-elevated p-3">
+              <div className="flex items-center gap-1.5 text-xs text-text-muted">
+                <Timer className="h-3.5 w-3.5 text-amber" />
+                Top Target
+              </div>
+              <p className="mt-1 truncate text-sm font-semibold text-text-primary">
+                {wellbeing.topWebsites[0]?.displayName ??
+                  wellbeing.topDesktopApps[0]?.displayName ??
+                  "No synced devices yet"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Weekly Focus Chart + Monthly Contribution Heatmap */}
       <div className="grid gap-6 lg:grid-cols-12">

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ember Companion Settings</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="options-body">
+    <div class="header">
+      <div class="brand">
+        <div class="brand-mark">E</div>
+        <div>
+          <div class="brand-title">Ember Focus & Wellbeing Settings</div>
+          <div class="brand-sub">Privacy-first website usage & pairing configuration</div>
+        </div>
+      </div>
+      <span id="pair-status-pill" class="pill">Unpaired (Local Only)</span>
+    </div>
+
+    <div class="card">
+      <strong>Privacy Guarantee</strong>
+      <p class="muted" style="margin-top: 6px">
+        Ember stores only normalized website hostnames (such as <code>github.com</code>) and daily
+        active seconds. Page titles, URL paths, query strings, incognito tabs, form inputs, and
+        browser internal pages are never collected. Cloud sync stays off unless you explicitly opt in
+        and pair this browser.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label for="api-base-url">Ember Server URL</label>
+        <input id="api-base-url" type="url" placeholder="https://ember-nine-flame.vercel.app" />
+      </div>
+
+      <div class="field">
+        <label for="idle-seconds">Idle detection threshold (seconds)</label>
+        <input id="idle-seconds" type="number" min="15" max="3600" value="60" />
+      </div>
+
+      <label class="checkbox-row">
+        <input id="sync-consent-checkbox" type="checkbox" />
+        <span>
+          <strong>Enable cloud sync to my Ember account</strong>
+          <div class="muted">Requires pairing below and matching sync consent in Ember Wellbeing.</div>
+        </span>
+      </label>
+
+      <div class="btn-row">
+        <button id="save-settings-btn" class="primary" type="button">Save Preferences</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong style="display: block; margin-bottom: 10px">Pair Browser to Ember Account</strong>
+      <div class="field">
+        <label for="device-name-input">Device Name</label>
+        <input id="device-name-input" type="text" placeholder="Work Chrome" />
+      </div>
+      <div class="field">
+        <label for="pairing-code-input">One-Time Pairing Code (from Ember → Wellbeing)</label>
+        <input id="pairing-code-input" type="text" placeholder="ABCD-EFGH" />
+      </div>
+      <div class="btn-row">
+        <button id="pair-btn" class="primary" type="button">Pair Browser</button>
+        <button id="sync-btn" type="button">Sync Now</button>
+        <button id="unpair-btn" class="danger" type="button">Disconnect</button>
+      </div>
+      <div id="options-feedback" class="status-banner" hidden></div>
+    </div>
+
+    <div class="card">
+      <strong>Local Data Controls</strong>
+      <p id="local-summary" class="muted" style="margin-top: 6px">Checking local storage...</p>
+      <div class="btn-row">
+        <button id="export-local-btn" type="button">Export Local JSON</button>
+        <button id="clear-local-btn" class="danger" type="button">Clear Local Usage</button>
+      </div>
+    </div>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

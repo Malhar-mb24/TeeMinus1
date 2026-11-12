@@ -8,3 +8,4 @@ export * from "./focus";
 export * from "./habits";
 export * from "./analytics";
 export * from "./onboarding";
+export * from "./wellbeing";

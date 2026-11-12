@@ -1,8 +1,8 @@
 # Ember
 
-Ember is a full-stack personal focus and digital-wellbeing platform built as a TypeScript monorepo. It pairs a Next.js App Router web application (Clerk authentication, Neon PostgreSQL, Drizzle ORM) with a separate Chrome Manifest V3 extension build target.
+Ember is a full-stack personal focus and digital-wellbeing platform built as a TypeScript monorepo. It pairs a Next.js App Router web application (Clerk authentication, Neon PostgreSQL, Drizzle ORM) with a Chrome Manifest V3 browser tracker and a Windows desktop application tracker.
 
-> **Current Status:** Batch 01 — Core Product (Dashboard, Focus Timer, Tasks & Planner, Habits, 2D Companion, Server Gamification, Analytics, Onboarding)
+> **Current Status:** Batch 02 — Complete Tracking Release (Digital Wellbeing `/wellbeing`, Unified `/insights`, Chrome MV3 Extension, Windows Desktop Tracker, Device Pairing & Opt-in Sync)
 
 ---
 
@@ -11,11 +11,12 @@ Ember is a full-stack personal focus and digital-wellbeing platform built as a T
 ```text
 ember/
 ├── apps/
-│   ├── web/                # Next.js App Router web app (Tailwind CSS v4, Clerk, Lucide)
-│   └── extension/          # Chrome Manifest V3 placeholder build (isolated from web)
+│   ├── web/                # Next.js App Router web app (Tailwind CSS v4, Clerk, Lucide, Recharts)
+│   ├── extension/          # Chrome Manifest V3 extension (active tab + idle + opt-in sync)
+│   └── desktop-tracker/    # Windows Win32 foreground app & idle tracker CLI
 ├── packages/
-│   ├── shared/             # Zod env/preference schemas, design tokens, DTO types
-│   └── database/           # Drizzle ORM schema, connection pool, migrations, health check
+│   ├── shared/             # Zod contracts, privacy hostname/app sanitizers, date/gamification helpers
+│   └── database/           # Drizzle ORM schema, connection pool, migrations, transactional services
 ├── docs/                   # Architecture, setup, decisions, security, notices
 ├── .env.example            # Placeholder environment variables (no secrets)
 ├── pnpm-workspace.yaml
@@ -56,9 +57,10 @@ ember/
 | Command | Purpose |
 | :--- | :--- |
 | `pnpm dev` | Start Next.js development server (`apps/web`) |
-| `pnpm build` | Build shared, database, web, and extension targets |
+| `pnpm build` | Build shared, database, web, Chrome extension, and desktop tracker targets |
 | `pnpm build:web` | Build only `apps/web` for production |
 | `pnpm build:extension` | Compile `apps/extension` into `apps/extension/dist` |
+| `pnpm build:desktop-tracker` | Compile `apps/desktop-tracker` into `apps/desktop-tracker/dist` |
 | `pnpm typecheck` | Run TypeScript checks across all workspace packages |
 | `pnpm lint` | Run ESLint on `apps/web` |
 | `pnpm test` | Run Vitest unit tests across shared, database, and web |

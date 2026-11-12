@@ -86,4 +86,37 @@ pnpm test:e2e
 5. Deploy and verify:
    - `GET https://<preview-domain>/api/health` returns HTTP `200` with `{"status":"ok","database":"connected","auth":"configured",...}`.
    - Unauthenticated visit to `/dashboard` redirects to `/sign-in`.
-   - New sign-up reaches `/onboarding`, persists preferences, and loads `/dashboard`, `/focus`, `/tasks`, `/habits`, `/insights`, and `/settings`.
+   - New sign-up reaches `/onboarding`, persists preferences, and loads `/dashboard`, `/focus`, `/tasks`, `/habits`, `/insights`, `/wellbeing`, and `/settings`.
+
+---
+
+## 7. Chrome MV3 Extension & Windows Desktop App Tracker (Batch 02)
+
+### Load Chrome Extension Unpacked (`apps/extension/dist`)
+1. Build the MV3 extension bundle:
+   ```bash
+   pnpm build:extension
+   ```
+2. Open Chrome -> `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select `apps/extension/dist`.
+3. To sync browser domain totals to your Ember account:
+   - Open Ember **Digital Wellbeing** (`/wellbeing`), enable **Privacy-First Opt-In Sync**, and click **Pair Chrome Extension**.
+   - Open the extension **Options & Sync** page, set your Ember Server URL (`https://ember-nine-flame.vercel.app` or `http://localhost:3000`), paste the pairing code, and click **Pair Browser**.
+
+### Run Windows Desktop Application Tracker (`apps/desktop-tracker`)
+1. Build the tracker CLI:
+   ```bash
+   pnpm build:desktop-tracker
+   ```
+2. *(Optional sync)* Generate a Windows tracker code in Ember `/wellbeing` and pair once:
+   ```bash
+   pnpm --filter @ember/desktop-tracker start pair --code XXXX-XXXX --server http://localhost:3000
+   ```
+3. Start real-time Win32 foreground app & idle tracking:
+   ```bash
+   pnpm --filter @ember/desktop-tracker start start --poll-ms 1000 --idle-seconds 60
+   ```
+4. Inspect or export local data anytime without syncing:
+   ```bash
+   pnpm --filter @ember/desktop-tracker start status
+   pnpm --filter @ember/desktop-tracker start export --out desktop-usage.json
+   ```

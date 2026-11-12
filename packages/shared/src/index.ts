@@ -5,3 +5,4 @@ export * from "./tokens";
 export * from "./dates";
 export * from "./gamification";
 export * from "./batch01";
+export * from "./wellbeing";

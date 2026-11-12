@@ -1,6 +1,7 @@
 import { SignOutButton } from "@clerk/nextjs";
 import { getEnvReadiness } from "@ember/shared";
-import { Download, Laptop, LogOut, Shield, SlidersHorizontal, UserCheck } from "lucide-react";
+import { ArrowRight, Download, Laptop, LogOut, Shield, SlidersHorizontal, UserCheck } from "lucide-react";
+import Link from "next/link";
 import { SettingsPreferencesForm } from "@/components/settings-preferences-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -107,22 +108,30 @@ export default async function SettingsPage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-sm">
                   <Laptop className="h-4 w-4 text-sky" />
-                  Extension Devices
+                  Connected Trackers
                 </CardTitle>
-                <Badge variant="neutral">Batch 04</Badge>
+                <Badge variant={prefs?.extensionTrackingConsent ? "emerald" : "neutral"}>
+                  {prefs?.extensionTrackingConsent ? "Sync On" : "Local Only"}
+                </Badge>
               </div>
               <CardDescription className="text-xs">
-                Browser pairing and credential revocation will appear here once the
-                Chrome extension is enabled.
+                Manage Chrome extension and Windows desktop app pairing codes or revoke
+                tokens anytime.
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
               <div className="flex items-center gap-2 rounded-xl border border-dashed border-border-subtle bg-surface-elevated/40 p-3.5 text-xs text-text-muted">
                 <Shield className="h-4 w-4 shrink-0 text-text-muted" />
                 <span>
-                  {session.userContext?.extensionDeviceCount ?? 0} connected devices
+                  {session.userContext?.extensionDeviceCount ?? 0} paired device(s)
                 </span>
               </div>
+              <Button asChild variant="secondary" size="sm" className="w-full">
+                <Link href="/wellbeing">
+                  Manage Wellbeing &amp; Devices
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </Button>
             </CardContent>
           </Card>
         </div>

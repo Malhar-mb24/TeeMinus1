@@ -9,6 +9,7 @@ const isProtectedPageRoute = createRouteMatcher([
   "/tasks(.*)",
   "/habits(.*)",
   "/insights(.*)",
+  "/wellbeing(.*)",
   "/settings(.*)",
 ]);
 
@@ -23,6 +24,12 @@ const isProtectedApiRoute = createRouteMatcher([
   "/api/analytics(.*)",
   "/api/gamification(.*)",
   "/api/export(.*)",
+  "/api/devices",
+  "/api/devices/pairing-code(.*)",
+  "/api/devices/(.*)/revoke",
+  "/api/wellbeing",
+  "/api/wellbeing/categories(.*)",
+  "/api/wellbeing/data(.*)",
 ]);
 
 function buildOriginUrl(req: NextRequest, pathname: string): URL {

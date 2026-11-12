@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { getDb, type EmberDatabase } from "./client";
 import { ensureAchievementsCatalog, ensureUserProgressRow } from "./gamification";
 import {
+  appUsageDaily,
   extensionDevices,
   focusSessions,
   goals,
@@ -16,6 +17,8 @@ import {
   userPreferences,
   userProgress,
   users,
+  websiteCategories,
+  websiteUsageDaily,
   xpEvents,
 } from "./schema";
 
@@ -102,6 +105,7 @@ export async function exportUserDataForUser(
     .select({
       id: extensionDevices.id,
       deviceName: extensionDevices.deviceName,
+      deviceType: extensionDevices.deviceType,
       browser: extensionDevices.browser,
       status: extensionDevices.status,
       lastSeenAt: extensionDevices.lastSeenAt,
@@ -109,6 +113,21 @@ export async function exportUserDataForUser(
     })
     .from(extensionDevices)
     .where(eq(extensionDevices.userId, userId));
+
+  const websiteUsage = await db
+    .select()
+    .from(websiteUsageDaily)
+    .where(eq(websiteUsageDaily.userId, userId));
+
+  const desktopAppUsage = await db
+    .select()
+    .from(appUsageDaily)
+    .where(eq(appUsageDaily.userId, userId));
+
+  const customCategories = await db
+    .select()
+    .from(websiteCategories)
+    .where(eq(websiteCategories.userId, userId));
 
   return {
     exportedAt: new Date().toISOString(),
@@ -123,5 +142,8 @@ export async function exportUserDataForUser(
     xpEvents: rewards,
     achievements: unlockedAchievements,
     extensionDevices: devices,
+    websiteUsageDaily: websiteUsage,
+    appUsageDaily: desktopAppUsage,
+    websiteCategories: customCategories,
   };
 }

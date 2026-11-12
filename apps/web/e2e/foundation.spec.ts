@@ -56,6 +56,7 @@ test.describe("Ember Batch 01 End-to-End Verification", () => {
       "/tasks",
       "/habits",
       "/insights",
+      "/wellbeing",
       "/settings",
     ]) {
       await page.goto(route, { waitUntil: "networkidle" });
@@ -81,12 +82,28 @@ test.describe("Ember Batch 01 End-to-End Verification", () => {
       "/api/analytics",
       "/api/gamification",
       "/api/export",
+      "/api/devices",
+      "/api/wellbeing",
     ];
 
     for (const endpoint of getEndpoints) {
       const res = await request.get(endpoint);
       expect(res.status(), `Expected 401 on GET ${endpoint}`).toBe(401);
     }
+
+    const pairingCodeRes = await request.post("/api/devices/pairing-code", { data: {} });
+    expect(pairingCodeRes.status()).toBe(401);
+
+    const syncRes = await request.post("/api/wellbeing/sync", { data: { entries: [] } });
+    expect(syncRes.status()).toBe(401);
+
+    const catRes = await request.put("/api/wellbeing/categories", {
+      data: { targetType: "website", pattern: "github.com", category: "productive" },
+    });
+    expect(catRes.status()).toBe(401);
+
+    const clearRes = await request.delete("/api/wellbeing/data");
+    expect(clearRes.status()).toBe(401);
 
     const onboardingRes = await request.post("/api/onboarding", { data: {} });
     expect(onboardingRes.status()).toBe(401);

@@ -8,6 +8,7 @@ import {
 } from "@/components/focus-timer-workspace";
 import { HabitsWorkspace } from "@/components/habits-workspace";
 import { SettingsPreferencesForm } from "@/components/settings-preferences-form";
+import { WellbeingWorkspace } from "@/components/wellbeing-workspace";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/dashboard",
@@ -207,5 +208,83 @@ describe("Ember Batch 01 UI components", () => {
     expect(screen.getByText("2026-12")).toBeInTheDocument();
     expect(screen.getByTitle("2026-12-01: pending")).toBeInTheDocument();
     expect(screen.getByTitle("2026-12-31: pending")).toBeInTheDocument();
+  });
+
+  it("renders Digital Wellbeing dashboard with websites, desktop apps, and device controls", () => {
+    render(
+      <WellbeingWorkspace
+        initialSummary={{
+          timezone: "UTC",
+          todayDate: "2026-11-12",
+          syncConsentEnabled: true,
+          todayTotalSeconds: 5400,
+          todayWebsiteSeconds: 3600,
+          todayDesktopSeconds: 1800,
+          todayFocusSeconds: 1500,
+          rangeTotalSeconds: 5400,
+          rangeDays: 7,
+          categoryBreakdown: {
+            productiveSeconds: 4200,
+            neutralSeconds: 1200,
+            distractingSeconds: 0,
+          },
+          dailyTrend: [
+            {
+              localDate: "2026-11-12",
+              dayLabel: "Thu",
+              websiteSeconds: 3600,
+              desktopSeconds: 1800,
+              totalSeconds: 5400,
+              focusSeconds: 1500,
+              productiveSeconds: 4200,
+              neutralSeconds: 1200,
+              distractingSeconds: 0,
+            },
+          ],
+          topWebsites: [
+            {
+              targetType: "website",
+              pattern: "github.com",
+              displayName: "github.com",
+              category: "productive",
+              activeSeconds: 3600,
+              count: 4,
+              sharePercent: 100,
+              lastUpdatedAt: "2026-11-12T10:00:00.000Z",
+            },
+          ],
+          topDesktopApps: [
+            {
+              targetType: "desktop_app",
+              pattern: "code.exe",
+              displayName: "VS Code",
+              category: "productive",
+              activeSeconds: 1800,
+              count: 2,
+              sharePercent: 100,
+              lastUpdatedAt: "2026-11-12T10:00:00.000Z",
+            },
+          ],
+          devices: [
+            {
+              id: "dev-1",
+              deviceName: "Work Chrome",
+              deviceType: "chrome_extension",
+              browser: "chrome",
+              status: "active",
+              lastSeenAt: "2026-11-12T10:00:00.000Z",
+              revokedAt: null,
+              createdAt: "2026-11-12T09:00:00.000Z",
+            },
+          ],
+        }}
+      />
+    );
+
+    expect(screen.getByText("Digital Wellbeing")).toBeInTheDocument();
+    expect(screen.getByText("github.com")).toBeInTheDocument();
+    expect(screen.getByText("Work Chrome")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Windows Apps/i }));
+    expect(screen.getByText("VS Code")).toBeInTheDocument();
   });
 });

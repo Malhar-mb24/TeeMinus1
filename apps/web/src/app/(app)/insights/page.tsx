@@ -1,6 +1,7 @@
 import {
   getAnalyticsSummaryForUser,
   getGamificationSummaryForUser,
+  getWellbeingSummaryForUser,
 } from "@ember/database";
 import type { CompanionStyle } from "@ember/shared";
 import { AlertCircle } from "lucide-react";
@@ -26,9 +27,10 @@ export default async function InsightsPage() {
   }
 
   const { profile, preferences } = session.userContext;
-  const [analytics, gamification] = await Promise.all([
+  const [analytics, gamification, wellbeing] = await Promise.all([
     getAnalyticsSummaryForUser(profile.id, preferences.timezone),
     getGamificationSummaryForUser(profile.id),
+    getWellbeingSummaryForUser(profile.id, preferences.timezone, 7),
   ]);
 
   return (
@@ -36,6 +38,7 @@ export default async function InsightsPage() {
       analytics={analytics}
       initialGamification={gamification}
       initialCompanionStyle={preferences.companionStyle as CompanionStyle}
+      wellbeing={wellbeing}
     />
   );
 }

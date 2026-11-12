@@ -17,7 +17,9 @@
 - Health and API error responses sanitize underlying exceptions and never expose stack traces, SQL queries, or PostgreSQL connection errors.
 - Response security headers configured in `apps/web/next.config.ts`: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`.
 
-## 4. Extension & Wellbeing Privacy Boundary (Batch 04 Prep)
-- `extension_devices` stores `token_hash` only (unique index) so raw extension bearer tokens are never persisted in plaintext.
-- `user_preferences.extension_tracking_consent` defaults to `false`, requiring explicit opt-in before future extension sync.
-- `apps/extension/manifest.json` requests minimal permissions (`tabs`, `idle`, `storage`, `alarms`) without broad content script injection.
+## 4. Extension & Desktop Wellbeing Privacy Boundary (Batch 02)
+- `device_pairing_codes.code_hash` and `extension_devices.token_hash` store SHA-256 digests only; plaintext tokens are returned once at pairing time and never stored or re-exposed.
+- `user_preferences.extension_tracking_consent` defaults to `false`; `/api/wellbeing/sync` rejects uploads with HTTP `403 CONSENT_REQUIRED` unless explicit sync consent is enabled.
+- `apps/extension/manifest.json` requests minimal permissions (`tabs`, `idle`, `storage`, `alarms`) without broad content script injection or DOM reading. Incognito windows and internal browser schemes (`chrome://`, `edge://`, `about:`, `file://`) are strictly excluded.
+- Both `apps/extension` and `apps/desktop-tracker` strip full URLs, paths, query strings, window titles, keystrokes, screenshots, and clipboard content — storing only normalized hostnames (`github.com`) and executable binary names (`code.exe`).
+- Sliding-window rate limiting protects `/api/devices/pairing-code`, `/api/devices/pair`, and `/api/wellbeing/sync`, while `DELETE /api/wellbeing/data` and `POST /api/devices/[id]/revoke` enforce strict user ownership.

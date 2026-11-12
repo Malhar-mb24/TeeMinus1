@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ember Wellbeing Companion</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="popup-body">
+    <div class="header">
+      <div class="brand">
+        <div class="brand-mark">E</div>
+        <div>
+          <div class="brand-title">Ember Companion</div>
+          <div class="brand-sub">Hostname-only local tracker</div>
+        </div>
+      </div>
+      <span id="status-pill" class="pill">Loading...</span>
+    </div>
+
+    <div class="card">
+      <div class="muted">Today's active browser time</div>
+      <div id="today-total" class="hero-total">0m</div>
+      <div id="active-host" class="muted">Waiting for an active website...</div>
+      <div class="btn-row">
+        <button id="toggle-pause-btn" type="button">Pause Tracking</button>
+        <button id="open-options-btn" type="button">Options & Sync</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="site-row">
+        <strong>Top Websites Today</strong>
+        <span id="sync-badge" class="muted">Local only</span>
+      </div>
+      <div id="top-sites" class="site-list">
+        <div class="muted">No website activity recorded today yet.</div>
+      </div>
+      <div class="btn-row">
+        <button id="sync-now-btn" class="primary" type="button" hidden>Sync Now</button>
+        <button id="export-btn" type="button">Export JSON</button>
+      </div>
+      <div id="feedback" class="status-banner" hidden></div>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
