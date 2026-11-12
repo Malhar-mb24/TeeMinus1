@@ -14,6 +14,7 @@ import {
 } from "@ember/shared";
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { getDb, type EmberDatabase } from "./client";
+import type { DbExecutor } from "./gamification";
 import { focusSessions, goals, tasks, userPreferences, type DbTask } from "./schema";
 
 function mapTaskDto(row: DbTask, actualMinutes = 0): TaskDto {
@@ -178,7 +179,7 @@ export async function deleteTaskForUser(
 export async function getActiveGoalsForUser(
   userId: string,
   timezone: string,
-  dbOverride?: EmberDatabase
+  dbOverride?: DbExecutor
 ): Promise<{ daily: GoalDto; weekly: GoalDto }> {
   const db = dbOverride ?? getDb();
   const todayKey = getLocalDateKey(new Date(), timezone);
@@ -338,7 +339,7 @@ export async function upsertGoalForUser(
         .where(eq(userPreferences.userId, userId));
     }
 
-    const refreshed = await getActiveGoalsForUser(userId, timezone, db);
+    const refreshed = await getActiveGoalsForUser(userId, timezone, tx);
     return {
       ...(input.periodType === "daily" ? refreshed.daily : refreshed.weekly),
       id: savedId,

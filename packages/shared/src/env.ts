@@ -31,8 +31,14 @@ export const clientEnvSchema = z.object({
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: clerkPublishableKeySchema,
   NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().trim().default("/sign-in"),
   NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().trim().default("/sign-up"),
-  NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().trim().default("/dashboard"),
-  NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().trim().default("/dashboard"),
+  NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL: z
+    .string()
+    .trim()
+    .default("/dashboard"),
+  NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL: z
+    .string()
+    .trim()
+    .default("/dashboard"),
   NEXT_PUBLIC_APP_URL: z.string().trim().url().optional(),
 });
 
@@ -100,10 +106,10 @@ export function parseServerEnv(
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: rawEnv.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: rawEnv.NEXT_PUBLIC_CLERK_SIGN_IN_URL || undefined,
     NEXT_PUBLIC_CLERK_SIGN_UP_URL: rawEnv.NEXT_PUBLIC_CLERK_SIGN_UP_URL || undefined,
-    NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL:
-      rawEnv.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || undefined,
-    NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL:
-      rawEnv.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || undefined,
+    NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL:
+      rawEnv.NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL || undefined,
+    NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL:
+      rawEnv.NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL || undefined,
     NEXT_PUBLIC_APP_URL: rawEnv.NEXT_PUBLIC_APP_URL || undefined,
   });
 

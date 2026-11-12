@@ -22,6 +22,7 @@ import {
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
@@ -59,6 +60,7 @@ export function TasksPlannerWorkspace({
   todayDate,
   timezone,
 }: TasksPlannerWorkspaceProps) {
+  const router = useRouter();
   const [tasks, setTasks] = React.useState<TaskDto[]>(initialTasks);
   const [goals, setGoals] = React.useState(initialGoals);
   const [selectedDate, setSelectedDate] = React.useState(todayDate);
@@ -199,6 +201,7 @@ export function TasksPlannerWorkspace({
       const weeklyJson = (await weeklyRes.json()) as { goal: GoalDto };
       setGoals({ daily: dailyJson.goal, weekly: weeklyJson.goal });
       setFeedback("Daily and weekly focus goals updated.");
+      router.refresh();
     } else {
       setFeedback("Unable to update goals. Check values (15–5000 min).");
     }

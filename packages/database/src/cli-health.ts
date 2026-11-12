@@ -1,5 +1,8 @@
 import { closeDbPool } from "./client";
 import { checkDatabaseHealth } from "./health";
+import { loadWorkspaceEnv } from "./load-env";
+
+loadWorkspaceEnv();
 
 async function main() {
   const result = await checkDatabaseHealth();
@@ -9,6 +12,9 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error("Database health check failed:", error instanceof Error ? error.message : "unknown error");
+  console.error(
+    "Database health check failed:",
+    error instanceof Error ? error.message : "unknown error"
+  );
   process.exit(1);
 });

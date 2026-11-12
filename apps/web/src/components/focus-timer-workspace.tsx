@@ -22,6 +22,7 @@ import {
   Square,
   XCircle,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { FlameCompanion } from "./flame-companion";
@@ -79,6 +80,7 @@ export function FocusTimerWorkspace({
   initialTaskId = null,
   level,
 }: FocusTimerWorkspaceProps) {
+  const router = useRouter();
   const [activeSession, setActiveSession] = React.useState<FocusSessionDto | null>(
     initialActiveSession
   );
@@ -273,6 +275,7 @@ export function FocusTimerWorkspace({
         setActiveSession(null);
         setSessionNotes("");
         await refreshSessions();
+        router.refresh();
         const xpMsg =
           data.xpAwarded && data.xpAwarded > 0
             ? ` +${data.xpAwarded} XP earned!`

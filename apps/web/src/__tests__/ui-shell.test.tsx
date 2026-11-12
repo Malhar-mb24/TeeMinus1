@@ -170,4 +170,42 @@ describe("Ember Batch 01 UI components", () => {
     fireEvent.click(screen.getByRole("tab", { name: /Month/i }));
     expect(screen.getByText("2026-11")).toBeInTheDocument();
   });
+
+  it("aligns monthly calendar dot grids with leading weekday padding cells", () => {
+    render(
+      <HabitsWorkspace
+        todayDate="2026-12-05"
+        initialHabits={[
+          {
+            id: "hab-dec",
+            userId: "user-1",
+            title: "Reading",
+            description: null,
+            category: "Betterment",
+            icon: "book-open",
+            color: "#10B981",
+            scheduleType: "daily",
+            scheduledDays: [0, 1, 2, 3, 4, 5, 6],
+            targetPerDay: 1,
+            archived: false,
+            createdAt: "2026-12-01T00:00:00.000Z",
+            entries: [],
+            stats: {
+              currentStreak: 0,
+              bestStreak: 0,
+              completedDays: 0,
+              skippedDays: 0,
+              missedDays: 4,
+              completionRate: 0,
+            },
+          },
+        ]}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("tab", { name: /Month/i }));
+    expect(screen.getByText("2026-12")).toBeInTheDocument();
+    expect(screen.getByTitle("2026-12-01: pending")).toBeInTheDocument();
+    expect(screen.getByTitle("2026-12-31: pending")).toBeInTheDocument();
+  });
 });

@@ -22,6 +22,7 @@ import {
   Timer,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { FlameCompanion } from "./flame-companion";
@@ -58,6 +59,7 @@ export function DashboardWorkspace({
   initialTasks,
   initialHabits,
 }: DashboardWorkspaceProps) {
+  const router = useRouter();
   const [habits, setHabits] = React.useState(initialHabits);
   const [tasks, setTasks] = React.useState(initialTasks);
   const [xpToast, setXpToast] = React.useState<string | null>(null);
@@ -108,6 +110,7 @@ export function DashboardWorkspace({
       setHabits((prev) =>
         prev.map((item) => (item.id === habit.id ? data.habit : item))
       );
+      router.refresh();
       if (data.xpAwarded > 0) {
         setXpToast(`+${data.xpAwarded} XP earned!`);
       }
@@ -126,6 +129,7 @@ export function DashboardWorkspace({
       setTasks((prev) =>
         prev.map((item) => (item.id === task.id ? data.task : item))
       );
+      router.refresh();
     }
   }
 

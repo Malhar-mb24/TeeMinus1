@@ -16,6 +16,9 @@ describe("shared env validation", () => {
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.data.NEXT_PUBLIC_CLERK_SIGN_IN_URL).toBe("/sign-in");
+      expect(result.data.NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL).toBe(
+        "/dashboard"
+      );
       expect(result.data.NEXT_PUBLIC_APP_URL).toBe("https://ember.example.com");
     }
   });

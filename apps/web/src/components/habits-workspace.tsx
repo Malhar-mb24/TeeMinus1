@@ -24,6 +24,7 @@ import {
   Trash2,
   Undo2,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
@@ -82,6 +83,7 @@ export function HabitsWorkspace({
   initialHabits,
   todayDate,
 }: HabitsWorkspaceProps) {
+  const router = useRouter();
   const [habits, setHabits] = React.useState<HabitWithStatsDto[]>(initialHabits);
   const [viewMode, setViewMode] = React.useState<HabitViewMode>("cards");
   const [categoryFilter, setCategoryFilter] = React.useState<string>("All");
@@ -178,6 +180,7 @@ export function HabitsWorkspace({
       setHabits((prev) =>
         prev.map((h) => (h.id === habitId ? data.habit! : h))
       );
+      router.refresh();
       if (data.xpAwarded && data.xpAwarded > 0) {
         setFeedback(`Checked in! +${data.xpAwarded} XP earned.`);
       }
@@ -797,6 +800,11 @@ export function HabitsWorkspace({
                     </div>
 
                     <div className="grid grid-cols-7 gap-1">
+                      {Array.from({ length: monthDays[0]?.dayOfWeek ?? 0 }).map(
+                        (_, padIdx) => (
+                          <div key={`pad-${padIdx}`} className="aspect-square" />
+                        )
+                      )}
                       {monthDays.map((day) => {
                         const entry = entryMap.get(day.dateKey);
                         const isToday = day.dateKey === todayDate;
