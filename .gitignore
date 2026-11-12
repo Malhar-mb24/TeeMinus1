@@ -20,6 +20,9 @@ test-results/
 *.db
 *.sqlite
 
+# Vercel
+.vercel/
+
 # OS & Editor
 .DS_Store
 Thumbs.db
