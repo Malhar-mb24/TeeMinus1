@@ -155,7 +155,7 @@ export default async function LandingPage() {
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-flame/25 bg-flame/10 text-flame-soft">
                     <Timer className="h-4 w-4" />
                   </span>
-                  <Badge variant="neutral">Batch 02</Badge>
+                  <Badge variant="emerald">Active</Badge>
                 </div>
                 <CardTitle className="pt-2">Focus Engine</CardTitle>
                 <CardDescription>
@@ -171,7 +171,7 @@ export default async function LandingPage() {
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-sky/25 bg-sky/10 text-sky">
                     <CalendarRange className="h-4 w-4" />
                   </span>
-                  <Badge variant="neutral">Batch 02</Badge>
+                  <Badge variant="emerald">Active</Badge>
                 </div>
                 <CardTitle className="pt-2">Plan vs. Record</CardTitle>
                 <CardDescription>
@@ -187,7 +187,7 @@ export default async function LandingPage() {
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald/25 bg-emerald/10 text-emerald">
                     <Grid2x2Check className="h-4 w-4" />
                   </span>
-                  <Badge variant="neutral">Batch 03</Badge>
+                  <Badge variant="emerald">Active</Badge>
                 </div>
                 <CardTitle className="pt-2">Habit Grids &amp; Flame</CardTitle>
                 <CardDescription>
@@ -223,11 +223,11 @@ export default async function LandingPage() {
                 <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-flame-soft" />
                 <div>
                   <p className="text-sm font-medium text-text-primary">
-                    Batch 00 Foundation Active
+                    Batch 01 Core Product Active
                   </p>
                   <p className="text-xs text-text-secondary">
-                    Protected Clerk routing, PostgreSQL profile persistence, and
-                    responsive PC/mobile shell are online.
+                    Timestamped focus timer, habit heatmaps, Plan vs. Record tasks,
+                    2D flame companion, server XP, and analytics are live.
                   </p>
                 </div>
               </div>

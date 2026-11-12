@@ -2,8 +2,28 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { getEnvReadiness } from "@ember/shared";
 import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
 
-const isProtectedPageRoute = createRouteMatcher(["/dashboard(.*)", "/settings(.*)"]);
-const isProtectedApiRoute = createRouteMatcher(["/api/me(.*)", "/api/preferences(.*)"]);
+const isProtectedPageRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/onboarding(.*)",
+  "/focus(.*)",
+  "/tasks(.*)",
+  "/habits(.*)",
+  "/insights(.*)",
+  "/settings(.*)",
+]);
+
+const isProtectedApiRoute = createRouteMatcher([
+  "/api/me(.*)",
+  "/api/preferences(.*)",
+  "/api/onboarding(.*)",
+  "/api/tasks(.*)",
+  "/api/goals(.*)",
+  "/api/focus-sessions(.*)",
+  "/api/habits(.*)",
+  "/api/analytics(.*)",
+  "/api/gamification(.*)",
+  "/api/export(.*)",
+]);
 
 const clerkHandler = clerkMiddleware(async (auth, req) => {
   if (isProtectedPageRoute(req) || isProtectedApiRoute(req)) {
@@ -14,7 +34,6 @@ const clerkHandler = clerkMiddleware(async (auth, req) => {
 export default function middleware(req: NextRequest, event: NextFetchEvent) {
   const readiness = getEnvReadiness(process.env);
 
-  // Fail closed on protected routes even when Clerk keys are not configured yet.
   if (!readiness.clerkConfigured) {
     if (isProtectedApiRoute(req)) {
       return NextResponse.json(

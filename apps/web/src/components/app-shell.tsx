@@ -25,24 +25,31 @@ interface AppShellProps {
   email: string | null;
   clerkEnabled: boolean;
   databaseReady: boolean;
+  level?: number;
+  totalXp?: number;
 }
 
 interface NavItem {
   label: string;
+  mobileLabel: string;
   href?: string;
   icon: React.ComponentType<{ className?: string }>;
   batchTag?: string;
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Focus Timer", icon: Timer, batchTag: "B02" },
-  { label: "Tasks & Plan", icon: CheckSquare, batchTag: "B02" },
-  { label: "Habits", icon: Grid2x2Check, batchTag: "B03" },
-  { label: "Wellbeing", icon: ShieldCheck, batchTag: "B04" },
-  { label: "Insights", icon: BarChart3, batchTag: "B05" },
-  { label: "Settings", href: "/settings", icon: Settings },
+const DESKTOP_NAV_ITEMS: NavItem[] = [
+  { label: "Dashboard", mobileLabel: "Home", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Focus Timer", mobileLabel: "Focus", href: "/focus", icon: Timer },
+  { label: "Tasks & Plan", mobileLabel: "Tasks", href: "/tasks", icon: CheckSquare },
+  { label: "Habits", mobileLabel: "Habits", href: "/habits", icon: Grid2x2Check },
+  { label: "Insights", mobileLabel: "Insights", href: "/insights", icon: BarChart3 },
+  { label: "Wellbeing", mobileLabel: "Wellbeing", icon: ShieldCheck, batchTag: "B04" },
+  { label: "Settings", mobileLabel: "Settings", href: "/settings", icon: Settings },
 ];
+
+const MOBILE_BOTTOM_TABS = DESKTOP_NAV_ITEMS.filter(
+  (item) => item.href && item.href !== "/settings"
+);
 
 export function AppShell({
   children,
@@ -50,6 +57,8 @@ export function AppShell({
   email,
   clerkEnabled,
   databaseReady,
+  level = 1,
+  totalXp = 0,
 }: AppShellProps) {
   const pathname = usePathname();
 
@@ -58,19 +67,22 @@ export function AppShell({
       {/* Desktop Sidebar Rail */}
       <aside
         aria-label="Primary navigation"
-        className="hidden md:flex md:w-64 lg:w-68 shrink-0 flex-col border-r border-border-subtle bg-surface/80 backdrop-blur-sm"
+        className="hidden md:flex md:w-64 shrink-0 flex-col border-r border-border-subtle bg-surface/85 backdrop-blur-sm"
       >
         <div className="flex h-16 items-center justify-between border-b border-border-subtle px-5">
-          <Link href="/dashboard" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame/60 rounded-xl">
+          <Link
+            href="/dashboard"
+            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame/60 rounded-xl"
+          >
             <EmberLogo />
           </Link>
-          <Badge variant="neutral" className="text-[10px]">
-            v0.1
+          <Badge variant="flame" className="text-[11px] tabular-nums">
+            Lv {level}
           </Badge>
         </div>
 
         <nav className="flex-1 space-y-1 p-3">
-          {NAV_ITEMS.map((item) => {
+          {DESKTOP_NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive = item.href ? pathname.startsWith(item.href) : false;
 
@@ -120,15 +132,10 @@ export function AppShell({
           <div className="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-elevated/70 px-3 py-2 text-xs">
             <span className="flex items-center gap-2 text-text-secondary">
               <Flame className="h-3.5 w-3.5 text-flame" />
-              Database
+              Experience
             </span>
-            <span
-              className={cn(
-                "font-medium",
-                databaseReady ? "text-emerald" : "text-rose"
-              )}
-            >
-              {databaseReady ? "Connected" : "Unconfigured"}
+            <span className="font-semibold text-flame-soft tabular-nums">
+              {totalXp} XP
             </span>
           </div>
 
@@ -166,13 +173,26 @@ export function AppShell({
         {/* Mobile Top Header */}
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border-subtle bg-canvas/90 px-4 backdrop-blur-md md:hidden">
           <Link href="/dashboard" className="rounded-lg">
-            <EmberLogo />
+            <EmberLogo compact />
           </Link>
 
           <div className="flex items-center gap-2">
-            <Badge variant={databaseReady ? "emerald" : "rose"} className="text-[11px]">
-              {databaseReady ? "DB Ready" : "DB Offline"}
+            <Badge variant="flame" className="text-[11px] tabular-nums">
+              Lv {level} · {totalXp} XP
             </Badge>
+            <Badge variant={databaseReady ? "emerald" : "rose"} className="text-[10px]">
+              {databaseReady ? "Synced" : "Offline"}
+            </Badge>
+            <Link
+              href="/settings"
+              aria-label="Settings"
+              className={cn(
+                "inline-flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle bg-surface-elevated text-text-secondary hover:text-text-primary",
+                pathname.startsWith("/settings") && "border-flame/40 text-flame-soft"
+              )}
+            >
+              <Settings className="h-4 w-4" />
+            </Link>
             {clerkEnabled && <UserButton />}
           </div>
         </header>
@@ -187,52 +207,27 @@ export function AppShell({
         aria-label="Mobile navigation"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border-subtle bg-surface/95 px-2 py-2 backdrop-blur-md md:hidden"
       >
-        <div className="mx-auto flex max-w-md items-center justify-around gap-1">
-          <Link
-            href="/dashboard"
-            className={cn(
-              "flex min-h-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-2 py-1 text-[11px] font-medium transition-colors",
-              pathname.startsWith("/dashboard")
-                ? "bg-flame/15 text-flame-soft"
-                : "text-text-secondary hover:text-text-primary"
-            )}
-          >
-            <LayoutDashboard className="h-4 w-4" />
-            <span>Dashboard</span>
-          </Link>
+        <div className="mx-auto flex max-w-lg items-center justify-around gap-1">
+          {MOBILE_BOTTOM_TABS.map((item) => {
+            const Icon = item.icon;
+            const isActive = item.href ? pathname.startsWith(item.href) : false;
 
-          <button
-            type="button"
-            disabled
-            aria-label="Focus Timer (Batch 02)"
-            className="flex min-h-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-2 py-1 text-[11px] text-text-muted/60 cursor-not-allowed"
-          >
-            <Timer className="h-4 w-4" />
-            <span>Focus · B02</span>
-          </button>
-
-          <button
-            type="button"
-            disabled
-            aria-label="Habits (Batch 03)"
-            className="flex min-h-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-2 py-1 text-[11px] text-text-muted/60 cursor-not-allowed"
-          >
-            <Grid2x2Check className="h-4 w-4" />
-            <span>Habits · B03</span>
-          </button>
-
-          <Link
-            href="/settings"
-            className={cn(
-              "flex min-h-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-2 py-1 text-[11px] font-medium transition-colors",
-              pathname.startsWith("/settings")
-                ? "bg-flame/15 text-flame-soft"
-                : "text-text-secondary hover:text-text-primary"
-            )}
-          >
-            <Settings className="h-4 w-4" />
-            <span>Settings</span>
-          </Link>
+            return (
+              <Link
+                key={item.label}
+                href={item.href!}
+                className={cn(
+                  "flex min-h-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-1 text-[11px] font-medium transition-colors",
+                  isActive
+                    ? "bg-flame/15 text-flame-soft"
+                    : "text-text-secondary hover:text-text-primary"
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                <span>{item.mobileLabel}</span>
+              </Link>
+            );
+          })}
         </div>
       </nav>
     </div>

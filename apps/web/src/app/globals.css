@@ -42,3 +42,75 @@
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
+
+@keyframes ember-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-2px) scale(1.03);
+  }
+}
+
+@keyframes ember-excited {
+  0%,
+  100% {
+    transform: translateY(0) scale(1) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.06) rotate(1.5deg);
+  }
+}
+
+@keyframes ember-celebrate {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  35% {
+    transform: translateY(-7px) scale(1.09);
+  }
+  70% {
+    transform: translateY(-2px) scale(1.04);
+  }
+}
+
+@keyframes ember-spark-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.7);
+  }
+  40% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-14px) scale(1.05);
+  }
+}
+
+.animate-ember-idle {
+  animation: ember-breathe 3.4s ease-in-out infinite;
+}
+
+.animate-ember-happy {
+  animation: ember-breathe 2.4s ease-in-out infinite;
+}
+
+.animate-ember-excited {
+  animation: ember-excited 1.6s ease-in-out infinite;
+}
+
+.animate-ember-sleepy {
+  animation: ember-breathe 5s ease-in-out infinite;
+  opacity: 0.85;
+}
+
+.animate-ember-celebrate {
+  animation: ember-celebrate 1.4s ease-in-out infinite;
+}
+
+.animate-ember-spark {
+  animation: ember-spark-rise 2s ease-out infinite;
+}

@@ -2,7 +2,7 @@
 
 Ember is a full-stack personal focus and digital-wellbeing platform built as a TypeScript monorepo. It pairs a Next.js App Router web application (Clerk authentication, Neon PostgreSQL, Drizzle ORM) with a separate Chrome Manifest V3 extension build target.
 
-> **Current Status:** Batch 00 — Foundation & Early Deployment
+> **Current Status:** Batch 01 — Core Product (Dashboard, Focus Timer, Tasks & Planner, Habits, 2D Companion, Server Gamification, Analytics, Onboarding)
 
 ---
 

@@ -13,6 +13,7 @@ import { getDb, type EmberDatabase } from "./client";
 import {
   extensionDevices,
   userPreferences,
+  userProgress,
   users,
   type DbUser,
   type DbUserPreferences,
@@ -150,6 +151,18 @@ export async function ensureUserProfile(
     if (!prefs) {
       throw new Error("Failed to provision or retrieve user preferences");
     }
+
+    await tx
+      .insert(userProgress)
+      .values({
+        userId: currentUser.id,
+        totalXp: 0,
+        level: 1,
+        currentFocusStreakDays: 0,
+        bestFocusStreakDays: 0,
+        unlockedCosmetics: ["classic-flame"],
+      })
+      .onConflictDoNothing({ target: userProgress.userId });
 
     const [deviceAggregate] = await tx
       .select({ total: count() })

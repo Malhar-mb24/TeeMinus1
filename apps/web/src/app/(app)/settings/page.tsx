@@ -1,6 +1,6 @@
 import { SignOutButton } from "@clerk/nextjs";
 import { getEnvReadiness } from "@ember/shared";
-import { Laptop, LogOut, Shield, SlidersHorizontal, UserCheck } from "lucide-react";
+import { Download, Laptop, LogOut, Shield, SlidersHorizontal, UserCheck } from "lucide-react";
 import { SettingsPreferencesForm } from "@/components/settings-preferences-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -83,6 +83,13 @@ export default async function SettingsPage() {
                   {profile?.id ?? "Unavailable"}
                 </p>
               </div>
+
+              <Button asChild variant="secondary" className="w-full">
+                <a href="/api/export" download="ember-export.json">
+                  <Download className="h-4 w-4" />
+                  Export Personal Data (JSON)
+                </a>
+              </Button>
 
               {readiness.clerkConfigured && (
                 <SignOutButton redirectUrl="/">

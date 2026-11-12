@@ -2,6 +2,7 @@ import {
   boolean,
   index,
   integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
@@ -11,7 +12,6 @@ import {
 
 /**
  * User profile mapping table linked to verified Clerk external identity.
- * Internal surrogate UUID primary key decouples relational ownership from external auth IDs.
  */
 export const users = pgTable(
   "users",
@@ -61,7 +61,6 @@ export const userPreferences = pgTable(
 
 /**
  * Placeholder table for Chrome MV3 extension pairing and revocable hashed tokens (Batch 04).
- * Raw tokens are never stored; only cryptographic hashes are persisted.
  */
 export const extensionDevices = pgTable(
   "extension_devices",
@@ -86,8 +85,243 @@ export const extensionDevices = pgTable(
   ]
 );
 
+/**
+ * Study and productivity tasks with optional time-block planning coordinates.
+ */
+export const tasks = pgTable(
+  "tasks",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    description: text("description"),
+    category: text("category").notNull().default("Study"),
+    color: text("color").notNull().default("#38BDF8"),
+    priority: text("priority").notNull().default("medium"),
+    status: text("status").notNull().default("todo"),
+    plannedMinutes: integer("planned_minutes").notNull().default(30),
+    scheduledDate: text("scheduled_date"),
+    plannedStartMinute: integer("planned_start_minute"),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index("tasks_user_scheduled_date_idx").on(table.userId, table.scheduledDate),
+    index("tasks_user_status_idx").on(table.userId, table.status),
+  ]
+);
+
+/**
+ * Persistent timestamp-anchored focus sessions.
+ */
+export const focusSessions = pgTable(
+  "focus_sessions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    taskId: uuid("task_id").references(() => tasks.id, { onDelete: "set null" }),
+    mode: text("mode").notNull(),
+    status: text("status").notNull(),
+    plannedDurationSeconds: integer("planned_duration_seconds"),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
+    lastResumedAt: timestamp("last_resumed_at", { withTimezone: true }),
+    accumulatedSeconds: integer("accumulated_seconds").notNull().default(0),
+    endedAt: timestamp("ended_at", { withTimezone: true }),
+    localDate: text("local_date").notNull(),
+    label: text("label"),
+    notes: text("notes"),
+    soundscape: text("soundscape").notNull().default("none"),
+    xpEarned: integer("xp_earned").notNull().default(0),
+    completionIdempotencyKey: text("completion_idempotency_key"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index("focus_sessions_user_status_idx").on(table.userId, table.status),
+    index("focus_sessions_user_local_date_idx").on(table.userId, table.localDate),
+    index("focus_sessions_user_started_at_idx").on(table.userId, table.startedAt),
+    uniqueIndex("focus_sessions_user_idempotency_uidx").on(
+      table.userId,
+      table.completionIdempotencyKey
+    ),
+  ]
+);
+
+/**
+ * Custom user habits with weekday schedule and daily step targets.
+ */
+export const habits = pgTable(
+  "habits",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    description: text("description"),
+    category: text("category").notNull().default("Betterment"),
+    icon: text("icon").notNull().default("check"),
+    color: text("color").notNull().default("#10B981"),
+    scheduleType: text("schedule_type").notNull().default("daily"),
+    scheduledDays: integer("scheduled_days").array().notNull().default([0, 1, 2, 3, 4, 5, 6]),
+    targetPerDay: integer("target_per_day").notNull().default(1),
+    archived: boolean("archived").notNull().default(false),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [index("habits_user_archived_idx").on(table.userId, table.archived)]
+);
+
+/**
+ * Daily local-calendar habit check-ins (strictly one row per habit per user per localDate).
+ */
+export const habitEntries = pgTable(
+  "habit_entries",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    habitId: uuid("habit_id")
+      .notNull()
+      .references(() => habits.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    localDate: text("local_date").notNull(),
+    status: text("status").notNull(),
+    progressCount: integer("progress_count").notNull().default(1),
+    note: text("note"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("habit_entries_habit_user_date_uidx").on(
+      table.habitId,
+      table.userId,
+      table.localDate
+    ),
+    index("habit_entries_user_local_date_idx").on(table.userId, table.localDate),
+  ]
+);
+
+/**
+ * Daily and weekly focus goals.
+ */
+export const goals = pgTable(
+  "goals",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    periodType: text("period_type").notNull(),
+    periodKey: text("period_key").notNull(),
+    targetMinutes: integer("target_minutes").notNull(),
+    targetSessions: integer("target_sessions").notNull().default(0),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("goals_user_period_uidx").on(
+      table.userId,
+      table.periodType,
+      table.periodKey
+    ),
+  ]
+);
+
+/**
+ * Server-authoritative aggregate user gamification state.
+ */
+export const userProgress = pgTable("user_progress", {
+  userId: uuid("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  totalXp: integer("total_xp").notNull().default(0),
+  level: integer("level").notNull().default(1),
+  currentFocusStreakDays: integer("current_focus_streak_days").notNull().default(0),
+  bestFocusStreakDays: integer("best_focus_streak_days").notNull().default(0),
+  lastQualifyingFocusDate: text("last_qualifying_focus_date"),
+  unlockedCosmetics: text("unlocked_cosmetics")
+    .array()
+    .notNull()
+    .default(["classic-flame"]),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+/**
+ * Idempotent XP event ledger preventing duplicate rewards.
+ */
+export const xpEvents = pgTable(
+  "xp_events",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    eventType: text("event_type").notNull(),
+    xpDelta: integer("xp_delta").notNull(),
+    idempotencyKey: text("idempotency_key").notNull(),
+    metadata: jsonb("metadata").$type<Record<string, unknown>>(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("xp_events_user_idempotency_uidx").on(
+      table.userId,
+      table.idempotencyKey
+    ),
+    index("xp_events_user_created_at_idx").on(table.userId, table.createdAt),
+  ]
+);
+
+/**
+ * Canonical achievements catalog.
+ */
+export const achievements = pgTable("achievements", {
+  code: text("code").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  icon: text("icon").notNull(),
+  xpReward: integer("xp_reward").notNull(),
+  category: text("category").notNull(),
+  threshold: integer("threshold").notNull(),
+});
+
+/**
+ * User-unlocked achievements.
+ */
+export const userAchievements = pgTable(
+  "user_achievements",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    achievementCode: text("achievement_code")
+      .notNull()
+      .references(() => achievements.code, { onDelete: "cascade" }),
+    unlockedAt: timestamp("unlocked_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("user_achievements_user_code_uidx").on(
+      table.userId,
+      table.achievementCode
+    ),
+  ]
+);
+
 export type DbUser = typeof users.$inferSelect;
 export type NewDbUser = typeof users.$inferInsert;
 export type DbUserPreferences = typeof userPreferences.$inferSelect;
 export type NewDbUserPreferences = typeof userPreferences.$inferInsert;
 export type DbExtensionDevice = typeof extensionDevices.$inferSelect;
+export type DbTask = typeof tasks.$inferSelect;
+export type DbFocusSession = typeof focusSessions.$inferSelect;
+export type DbHabit = typeof habits.$inferSelect;
+export type DbHabitEntry = typeof habitEntries.$inferSelect;
+export type DbGoal = typeof goals.$inferSelect;
+export type DbUserProgress = typeof userProgress.$inferSelect;

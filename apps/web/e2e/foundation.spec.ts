@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test.describe("Ember Batch 00 Foundation Smoke Suite", () => {
+test.describe("Ember Batch 01 End-to-End Verification", () => {
   test("public landing page and auth navigation work cleanly on desktop and mobile", async ({
     page,
   }, testInfo) => {
@@ -46,26 +46,50 @@ test.describe("Ember Batch 00 Foundation Smoke Suite", () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test("unauthenticated users cannot access protected dashboard or settings", async ({
+  test("unauthenticated users cannot access any protected Batch 01 pages", async ({
     page,
   }, testInfo) => {
-    await page.goto("/dashboard", { waitUntil: "networkidle" });
-    await expect(page).toHaveURL(/\/sign-in/);
+    for (const route of [
+      "/dashboard",
+      "/onboarding",
+      "/focus",
+      "/tasks",
+      "/habits",
+      "/insights",
+      "/settings",
+    ]) {
+      await page.goto(route, { waitUntil: "networkidle" });
+      await expect(page).toHaveURL(/\/sign-in/);
+    }
 
     await page.screenshot({
       path: `test-results/signin-redirect-${testInfo.project.name}.png`,
       fullPage: true,
     });
-
-    await page.goto("/settings", { waitUntil: "networkidle" });
-    await expect(page).toHaveURL(/\/sign-in/);
   });
 
-  test("protected APIs enforce 401 and health API returns structured JSON", async ({
+  test("all protected API routes enforce 401 and health API returns structured JSON", async ({
     request,
   }) => {
-    const meRes = await request.get("/api/me");
-    expect(meRes.status()).toBe(401);
+    const getEndpoints = [
+      "/api/me",
+      "/api/preferences",
+      "/api/tasks",
+      "/api/goals",
+      "/api/focus-sessions",
+      "/api/habits",
+      "/api/analytics",
+      "/api/gamification",
+      "/api/export",
+    ];
+
+    for (const endpoint of getEndpoints) {
+      const res = await request.get(endpoint);
+      expect(res.status(), `Expected 401 on GET ${endpoint}`).toBe(401);
+    }
+
+    const onboardingRes = await request.post("/api/onboarding", { data: {} });
+    expect(onboardingRes.status()).toBe(401);
 
     const prefsRes = await request.patch("/api/preferences", {
       data: { pomodoroMinutes: 30 },

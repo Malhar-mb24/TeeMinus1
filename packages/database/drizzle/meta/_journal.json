@@ -8,6 +8,13 @@
       "when": 1794417199872,
       "tag": "0000_curly_mikhail_rasputin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794460815300,
+      "tag": "0001_soft_changeling",
+      "breakpoints": true
     }
   ]
 }

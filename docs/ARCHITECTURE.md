@@ -1,46 +1,32 @@
-# Ember Architecture (Batch 00)
+# Ember Architecture (Batch 01)
 
 ## 1. System Overview
 
-Ember uses a cohesive TypeScript monorepo managed with `pnpm` workspaces:
+Ember is a responsive full-stack productivity and digital-wellbeing platform built in a `pnpm` TypeScript monorepo:
 
-- **`apps/web`** — Next.js App Router application serving the public entry page, Clerk authentication routes, protected dashboard/settings shell, and JSON API routes (`/api/health`, `/api/me`, `/api/preferences`).
-- **`apps/extension`** — Isolated Chrome Manifest V3 TypeScript build target (`dist/`) for Batch 04 digital-wellbeing features. Kept separate from `apps/web` bundle outputs.
-- **`packages/shared`** — Runtime-agnostic Zod validation schemas (`parseServerEnv`, `getEnvReadiness`, `updateUserPreferencesSchema`), shared DTO types, and dark-first design tokens (`EMBER_TOKENS`).
-- **`packages/database`** — Drizzle ORM PostgreSQL schema, pooled connection factory (`pg` + Drizzle), SQL migrations (`drizzle/`), health check (`checkDatabaseHealth`), and user profile/preferences repository (`ensureUserProfile`, `updateUserPreferencesForUser`).
-
-```text
-Browser UI (Desktop Rail / Mobile Bottom Nav)
-  -> Next.js App Router & Middleware (Clerk JWT verification)
-  -> Server Components / Route Handlers (apps/web/src/lib/auth.ts)
-  -> Database Repository Layer (packages/database)
-  -> Neon PostgreSQL (Drizzle ORM + parameterized queries)
-```
+- **`apps/web`** — Next.js 15 App Router web application (React 19, Tailwind CSS v4, Clerk auth, Lucide icons, Recharts).
+  - Routes: `/` (public landing), `/sign-in`, `/sign-up`, `/onboarding`, `/dashboard`, `/focus`, `/tasks`, `/habits`, `/insights`, `/settings`.
+  - APIs: `/api/health`, `/api/me`, `/api/preferences`, `/api/onboarding`, `/api/tasks`, `/api/tasks/[id]`, `/api/goals`, `/api/focus-sessions`, `/api/focus-sessions/[id]`, `/api/habits`, `/api/habits/[id]`, `/api/habits/[id]/checkin`, `/api/analytics`, `/api/gamification`, `/api/export`.
+- **`apps/extension`** — Separate Chrome Manifest V3 build target (`dist/`) reserved for Batch 04 browser tracking.
+- **`packages/shared`** — Zod contracts, environment validation, timezone-aware date/streak helpers (`getLocalDateKey`, `computeHabitStats`), gamification level/XP rules (`getLevelProgress`, `calculateSessionXp`), and dark-first design tokens (`EMBER_TOKENS`).
+- **`packages/database`** — Drizzle ORM PostgreSQL schema (12 tables), connection pool, SQL migrations (`drizzle/`), transactional services for focus sessions, tasks, goals, habits, server-authoritative XP/achievements, and indexed analytics aggregations.
 
 ---
 
-## 2. Database Schema (Batch 00 Scope)
+## 2. Database Schema (Batch 01)
 
-Only the core foundation tables are created in Batch 00:
-
-1. **`users`**
-   - `id` (`uuid`, PK) — Internal surrogate key.
-   - `clerk_user_id` (`text`, unique index) — External verified identity from Clerk.
-   - `email`, `display_name`, `avatar_url`, `onboarding_completed`, `created_at`, `updated_at`.
-2. **`user_preferences`**
-   - `id` (`uuid`, PK), `user_id` (`uuid`, unique FK -> `users.id` ON DELETE CASCADE).
-   - Timer defaults (`pomodoro_minutes`, `short_break_minutes`, `long_break_minutes`, `daily_focus_goal_minutes`), `timezone`, `theme`, `companion_style`, `soundscape_preference`, `extension_tracking_consent`, `extension_consent_updated_at`, `notifications_enabled`.
-3. **`extension_devices`** (placeholder)
-   - `id` (`uuid`, PK), `user_id` (`uuid`, FK -> `users.id` ON DELETE CASCADE).
-   - `device_name`, `browser`, `token_hash` (unique), `status`, `last_seen_at`, `revoked_at`.
-
-Product tables for focus sessions, tasks, habits, XP, and website usage belong to Batches 02–04 and are intentionally omitted here.
+1. **`users`**, **`user_preferences`**, **`extension_devices`** (Batch 00 foundation)
+2. **`tasks`** — Task title, description, category, hex color bar, priority, status, planned minutes, `scheduled_date`, `planned_start_minute`, `completed_at`. Indexed on `(user_id, scheduled_date)` and `(user_id, status)`.
+3. **`focus_sessions`** — Timestamp-anchored sessions (`started_at`, `last_resumed_at`, `accumulated_seconds`, `ended_at`, `local_date`, `mode`, `status`, `task_id`, `label`, `notes`, `soundscape`, `xp_earned`, `completion_idempotency_key`). Indexed on `(user_id, status)`, `(user_id, local_date)`, `(user_id, started_at)` and unique `(user_id, completion_idempotency_key)`.
+4. **`habits`** & **`habit_entries`** — Custom schedules (`daily` | `weekdays`), `target_per_day`, and strictly one entry per habit/user/`local_date` (`completed` | `partial` | `skipped` | `missed`).
+5. **`goals`** — Daily (`YYYY-MM-DD`) and weekly (`YYYY-Www`) focus minute/session targets.
+6. **`user_progress`**, **`xp_events`**, **`achievements`**, **`user_achievements`** — Server-authoritative XP ledger with unique `(user_id, idempotency_key)` preventing duplicate rewards and XP farming.
 
 ---
 
-## 3. UI Shell & Responsiveness
+## 3. Reliability & Privacy Invariants
 
-- **Dark-first surface hierarchy:** Canvas `#0B0C0E`, primary cards `#131519`, elevated controls `#1A1D23`, subtle borders `#252932`, restrained flame accent `#F97316`.
-- **Desktop (`md+`):** Left navigation rail with active routes (`Dashboard`, `Settings`) and clearly labeled upcoming module slots (`B02`–`B05`).
-- **Mobile (`< md`):** Compact sticky header + thumb-friendly bottom navigation bar with `>= 44px` tap targets and `overflow-x-hidden` protection.
-- **Honest Foundation State:** No fabricated focus durations, streaks, or screen-time metrics are displayed.
+- **Timestamp-driven Timer:** Elapsed time is calculated from server-persisted `accumulated_seconds + (now - last_resumed_at)` on both server transitions and client visibility/interval syncs, surviving page reloads and tab suspension.
+- **Transactional Gamification:** Focus session completion, daily goal bonus checks, streak increments, and achievement unlocks execute inside a single PostgreSQL transaction.
+- **FlowTunes Integration:** Non-intrusive soundscape selector and official website link (`https://www.flowtunes.app/index.html`) without proxying or scraping.
+- **2D Flame Companion:** Lightweight animated SVG/CSS states (`idle`, `happy`, `excited`, `sleepy`, `celebration`) with level-unlocked cosmetic styles and non-punitive messaging.
