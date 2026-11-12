@@ -84,12 +84,19 @@ test.describe("Ember Batch 01 End-to-End Verification", () => {
       "/api/export",
       "/api/devices",
       "/api/wellbeing",
+      "/api/reminders",
+      "/api/intelligence",
     ];
 
     for (const endpoint of getEndpoints) {
       const res = await request.get(endpoint);
       expect(res.status(), `Expected 401 on GET ${endpoint}`).toBe(401);
     }
+
+    const remindersPutRes = await request.put("/api/reminders", {
+      data: { notificationsEnabled: false },
+    });
+    expect(remindersPutRes.status()).toBe(401);
 
     const pairingCodeRes = await request.post("/api/devices/pairing-code", { data: {} });
     expect(pairingCodeRes.status()).toBe(401);

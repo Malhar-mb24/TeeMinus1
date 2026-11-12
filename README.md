@@ -2,7 +2,7 @@
 
 Ember is a full-stack personal focus and digital-wellbeing platform built as a TypeScript monorepo. It pairs a Next.js App Router web application (Clerk authentication, Neon PostgreSQL, Drizzle ORM) with a Chrome Manifest V3 browser tracker and a Windows desktop application tracker.
 
-> **Current Status:** Batch 02 — Complete Tracking Release (Digital Wellbeing `/wellbeing`, Unified `/insights`, Chrome MV3 Extension, Windows Desktop Tracker, Device Pairing & Opt-in Sync)
+> **Current Status:** Batch 03 — Product Completion & Experience (Official FlowTunes Launcher/Panel, Focus & Wellbeing Intelligence, Daily/Weekly/Monthly Insights, Consent-Gated Reminders & Quiet Hours, Full-App UX Polish)
 
 ---
 

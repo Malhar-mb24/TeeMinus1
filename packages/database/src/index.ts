@@ -9,3 +9,5 @@ export * from "./habits";
 export * from "./analytics";
 export * from "./onboarding";
 export * from "./wellbeing";
+export * from "./reminders";
+export * from "./intelligence";

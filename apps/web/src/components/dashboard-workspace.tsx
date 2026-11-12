@@ -17,6 +17,7 @@ import {
   Grid2x2Check,
   Headphones,
   Play,
+  ShieldCheck,
   Sparkles,
   Target,
   Timer,
@@ -157,6 +158,12 @@ export function DashboardWorkspace({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/wellbeing">
+              <ShieldCheck className="h-4 w-4 text-emerald" />
+              Wellbeing
+            </Link>
+          </Button>
           <Button asChild variant="outline" size="sm">
             <a
               href="https://www.flowtunes.app/index.html"

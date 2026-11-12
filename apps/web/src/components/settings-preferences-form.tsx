@@ -98,6 +98,7 @@ export function SettingsPreferencesForm({
         return;
       }
 
+      window.dispatchEvent(new Event("ember-reminders-updated"));
       setFeedback({
         type: "success",
         message: "Preferences saved to your Ember profile.",
@@ -242,7 +243,8 @@ export function SettingsPreferencesForm({
               Extension Sync Consent (Opt-In)
             </p>
             <p className="text-xs text-text-secondary">
-              Allows future Chrome extension pairing to sync aggregated hostname-only usage summaries.
+              Allows Chrome extension and Windows desktop pairing to sync daily hostname and
+              executable summaries.
             </p>
           </div>
           <Switch

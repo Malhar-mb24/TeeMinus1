@@ -17,6 +17,7 @@ import { usePathname } from "next/navigation";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { EmberLogo } from "./ember-logo";
+import { ReminderEngine } from "./reminder-engine";
 import { Badge } from "./ui/badge";
 
 interface AppShellProps {
@@ -230,6 +231,7 @@ export function AppShell({
           })}
         </div>
       </nav>
+      {databaseReady && <ReminderEngine />}
     </div>
   );
 }

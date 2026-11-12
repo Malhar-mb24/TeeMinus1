@@ -1,5 +1,6 @@
 import {
   getAnalyticsSummaryForUser,
+  getFocusIntelligenceForUser,
   getGamificationSummaryForUser,
   getWellbeingSummaryForUser,
 } from "@ember/database";
@@ -27,10 +28,11 @@ export default async function InsightsPage() {
   }
 
   const { profile, preferences } = session.userContext;
-  const [analytics, gamification, wellbeing] = await Promise.all([
+  const [analytics, gamification, wellbeing, intelligence] = await Promise.all([
     getAnalyticsSummaryForUser(profile.id, preferences.timezone),
     getGamificationSummaryForUser(profile.id),
-    getWellbeingSummaryForUser(profile.id, preferences.timezone, 7),
+    getWellbeingSummaryForUser(profile.id, preferences.timezone, 14),
+    getFocusIntelligenceForUser(profile.id, preferences.timezone, 14),
   ]);
 
   return (
@@ -39,6 +41,7 @@ export default async function InsightsPage() {
       initialGamification={gamification}
       initialCompanionStyle={preferences.companionStyle as CompanionStyle}
       wellbeing={wellbeing}
+      intelligence={intelligence}
     />
   );
 }

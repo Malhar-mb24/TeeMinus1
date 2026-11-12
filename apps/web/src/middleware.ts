@@ -30,6 +30,8 @@ const isProtectedApiRoute = createRouteMatcher([
   "/api/wellbeing",
   "/api/wellbeing/categories(.*)",
   "/api/wellbeing/data(.*)",
+  "/api/reminders(.*)",
+  "/api/intelligence(.*)",
 ]);
 
 function buildOriginUrl(req: NextRequest, pathname: string): URL {

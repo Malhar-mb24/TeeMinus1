@@ -120,3 +120,10 @@ pnpm test:e2e
    pnpm --filter @ember/desktop-tracker start status
    pnpm --filter @ember/desktop-tracker start export --out desktop-usage.json
    ```
+
+---
+
+## 8. FlowTunes & Reminders Configuration (Batch 03)
+
+- **FlowTunes (`/focus`):** Offers a quick-launch link to `https://www.flowtunes.app/index.html` plus an optional sandboxed in-page preview with graceful fallback when browser shields block framed audio.
+- **Reminders (`/settings`):** Configure Focus Start, Break Interval, Daily Goal, Habit check-in schedules, and Quiet Hours in `Settings → Reminders & Quiet Hours`. Browser notifications are only requested on explicit click and fall back cleanly to in-app dismissible toasts when denied or unsupported.

@@ -280,8 +280,8 @@ export function WellbeingWorkspace({ initialSummary }: WellbeingWorkspaceProps) 
                 </Badge>
               </div>
               <p className="mt-0.5 text-xs text-text-secondary">
-                Hostnames and application names only. No full URLs, query parameters, incognito
-                sessions, window titles, or keystrokes are ever recorded.
+                Hostnames and executable names only—no URL paths, incognito sessions, window
+                titles, or keystrokes. Off-timer idle/disconnected intervals are never guessed.
               </p>
             </div>
           </div>

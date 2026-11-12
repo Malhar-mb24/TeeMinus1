@@ -16,6 +16,7 @@ import {
   userAchievements,
   userPreferences,
   userProgress,
+  userReminderPreferences,
   users,
   websiteCategories,
   websiteUsageDaily,
@@ -129,10 +130,17 @@ export async function exportUserDataForUser(
     .from(websiteCategories)
     .where(eq(websiteCategories.userId, userId));
 
+  const [reminderPrefs] = await db
+    .select()
+    .from(userReminderPreferences)
+    .where(eq(userReminderPreferences.userId, userId))
+    .limit(1);
+
   return {
     exportedAt: new Date().toISOString(),
     profile: profile ?? null,
     preferences: preferences ?? null,
+    reminderPreferences: reminderPrefs ?? null,
     tasks: userTasks,
     focusSessions: sessions,
     habits: userHabits,

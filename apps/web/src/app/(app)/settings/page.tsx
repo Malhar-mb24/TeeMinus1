@@ -1,8 +1,10 @@
 import { SignOutButton } from "@clerk/nextjs";
-import { getEnvReadiness } from "@ember/shared";
-import { ArrowRight, Download, Laptop, LogOut, Shield, SlidersHorizontal, UserCheck } from "lucide-react";
+import { getReminderSettingsForUser } from "@ember/database";
+import { DEFAULT_REMINDER_SETTINGS, getEnvReadiness } from "@ember/shared";
+import { ArrowRight, Bell, Download, Laptop, LogOut, Shield, SlidersHorizontal, UserCheck } from "lucide-react";
 import Link from "next/link";
 import { SettingsPreferencesForm } from "@/components/settings-preferences-form";
+import { SettingsRemindersCard } from "@/components/settings-reminders-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +23,10 @@ export default async function SettingsPage() {
   const readiness = getEnvReadiness(process.env);
   const prefs = session.userContext?.preferences ?? null;
   const profile = session.userContext?.profile ?? null;
+  const reminderSettings =
+    session.databaseReady && profile
+      ? await getReminderSettingsForUser(profile.id)
+      : DEFAULT_REMINDER_SETTINGS;
 
   return (
     <div className="space-y-6">
@@ -35,23 +41,44 @@ export default async function SettingsPage() {
 
       <div className="grid gap-6 lg:grid-cols-12">
         {/* Preferences Form */}
-        <Card className="lg:col-span-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <SlidersHorizontal className="h-4 w-4 text-flame-soft" />
-              Workspace Preferences
-            </CardTitle>
-            <CardDescription>
-              Changes persist directly to PostgreSQL under your authenticated profile.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <SettingsPreferencesForm
-              initialPreferences={prefs}
-              disabled={!session.databaseReady}
-            />
-          </CardContent>
-        </Card>
+        <div className="space-y-6 lg:col-span-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4 text-flame-soft" />
+                Workspace Preferences
+              </CardTitle>
+              <CardDescription>
+                Changes persist directly to PostgreSQL under your authenticated profile.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <SettingsPreferencesForm
+                initialPreferences={prefs}
+                disabled={!session.databaseReady}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="h-4 w-4 text-flame-soft" />
+                Reminders &amp; Quiet Hours
+              </CardTitle>
+              <CardDescription>
+                Configure consent-gated focus, break, goal, and habit reminders with in-app
+                fallback when browser notifications are blocked or unavailable.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <SettingsRemindersCard
+                initialSettings={reminderSettings}
+                disabled={!session.databaseReady}
+              />
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Right Column: Account & Extension Placeholder */}
         <div className="space-y-6 lg:col-span-4">

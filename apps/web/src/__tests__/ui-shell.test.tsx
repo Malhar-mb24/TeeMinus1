@@ -6,8 +6,11 @@ import {
   computeClientElapsedSeconds,
   FocusTimerWorkspace,
 } from "@/components/focus-timer-workspace";
+import { FlowTunesPanel } from "@/components/flowtunes-panel";
 import { HabitsWorkspace } from "@/components/habits-workspace";
+import { InsightsWorkspace } from "@/components/insights-workspace";
 import { SettingsPreferencesForm } from "@/components/settings-preferences-form";
+import { SettingsRemindersCard } from "@/components/settings-reminders-card";
 import { WellbeingWorkspace } from "@/components/wellbeing-workspace";
 
 vi.mock("next/navigation", () => ({
@@ -286,5 +289,151 @@ describe("Ember Batch 01 UI components", () => {
     expect(screen.getByText("Work Chrome")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Windows Apps/i }));
     expect(screen.getByText("VS Code")).toBeInTheDocument();
+  });
+
+  it("renders FlowTunesPanel with official link-out and toggleable embed without fake controls", () => {
+    render(
+      <FlowTunesPanel soundscape="lofi" onSoundscapeChange={() => undefined} sessionActive={true} />
+    );
+
+    const link = screen.getByRole("link", { name: /Open FlowTunes Tab/i });
+    expect(link).toHaveAttribute("href", "https://www.flowtunes.app/index.html");
+    expect(link).toHaveAttribute("target", "_blank");
+
+    fireEvent.click(screen.getByRole("button", { name: /Try In-Page/i }));
+    expect(screen.getByTitle("FlowTunes ambient focus audio")).toBeInTheDocument();
+  });
+
+  it("renders SettingsRemindersCard and gates test notifications cleanly on user consent", () => {
+    render(
+      <SettingsRemindersCard
+        initialSettings={{
+          notificationsEnabled: false,
+          focusReminderEnabled: true,
+          focusReminderTime: "09:30",
+          breakReminderEnabled: true,
+          breakIntervalMinutes: 50,
+          dailyGoalReminderEnabled: false,
+          dailyGoalReminderTime: "18:00",
+          habitReminderEnabled: false,
+          habitReminderTime: "20:00",
+          quietHoursEnabled: true,
+          quietHoursStart: "22:00",
+          quietHoursEnd: "07:30",
+          updatedAt: null,
+        }}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Send Test/i }));
+    expect(
+      screen.getByText(/Enable Reminders & Notifications consent toggle first/i)
+    ).toBeInTheDocument();
+  });
+
+  it("renders InsightsWorkspace across Daily, Weekly, and Monthly views with coverage boundaries", () => {
+    render(
+      <InsightsWorkspace
+        analytics={{
+          todayDate: "2026-11-12",
+          timezone: "UTC",
+          daily: {
+            focusMinutes: 25,
+            dailyGoalMinutes: 120,
+            sessionsCompleted: 1,
+            tasksCompleted: 1,
+            habitsCompleted: 1,
+            habitsScheduledToday: 1,
+          },
+          weekly: {
+            totalFocusMinutes: 25,
+            sessionsCompleted: 1,
+            consistencyDays: 1,
+            weeklyGoalMinutes: 600,
+            buckets: [
+              {
+                localDate: "2026-11-12",
+                label: "Thu",
+                focusMinutes: 25,
+                sessionsCount: 1,
+                tasksCompleted: 1,
+                habitsCompleted: 1,
+              },
+            ],
+            categoryBreakdown: [{ category: "Study", minutes: 25 }],
+          },
+          monthly: {
+            totalFocusMinutes: 25,
+            activeDays: 1,
+            heatmap: [{ localDate: "2026-11-12", focusMinutes: 25 }],
+          },
+        }}
+        initialGamification={{
+          totalXp: 50,
+          level: 1,
+          xpIntoLevel: 50,
+          xpToNextLevel: 50,
+          progressPercent: 50,
+          currentFocusStreakDays: 1,
+          bestFocusStreakDays: 1,
+          unlockedCosmetics: ["classic-flame"],
+          achievements: [],
+          recentXpEvents: [],
+        }}
+        initialCompanionStyle="classic-flame"
+        intelligence={{
+          timezone: "UTC",
+          todayDate: "2026-11-12",
+          rangeDays: 14,
+          coverage: {
+            status: "none",
+            syncConsentEnabled: false,
+            hasActiveExtension: false,
+            hasActiveDesktopTracker: false,
+            activeDeviceCount: 0,
+            explanation: "No active tracking devices or synced browser/desktop logs found.",
+          },
+          accounting: {
+            rangeDays: 14,
+            focusSeconds: 1500,
+            completedFocusSessions: 1,
+            interruptedFocusSessions: 0,
+            trackedWebsiteSeconds: null,
+            trackedDesktopSeconds: null,
+            sessionPauseSeconds: 60,
+            idleAndUntrackedNote: "Untracked gaps remain unknown.",
+          },
+          sessionsTimeline: [
+            {
+              id: "s-1",
+              localDate: "2026-11-12",
+              startedAt: "2026-11-12T10:00:00.000Z",
+              endedAt: "2026-11-12T10:26:00.000Z",
+              mode: "pomodoro",
+              status: "completed",
+              title: "Linear Algebra",
+              plannedDurationSeconds: 1500,
+              accumulatedSeconds: 1500,
+              pauseGapSeconds: 60,
+              xpEarned: 35,
+              outcomeFlag: "deep_completion",
+              sameDayTrackedWebSeconds: null,
+              sameDayTrackedDesktopSeconds: null,
+              sameDayDistractingSeconds: null,
+              sameDayDistractingTargets: [],
+            },
+          ],
+          distractionSignals: [],
+          methodologyNotes: ["Server-anchored focus timestamps."],
+        }}
+      />
+    );
+
+    expect(screen.getByText("Linear Algebra")).toBeInTheDocument();
+    expect(screen.getAllByText("Unknown (Not paired)").length).toBeGreaterThanOrEqual(2);
+    fireEvent.click(screen.getByRole("tab", { name: "Weekly" }));
+    expect(screen.getByText("Weekly Focus Activity")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", { name: "Monthly" }));
+    expect(screen.getByText("Focus Contribution Grid")).toBeInTheDocument();
   });
 });

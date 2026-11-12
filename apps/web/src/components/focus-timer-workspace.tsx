@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  SOUNDSCAPE_PREFERENCES,
   type CompanionStyle,
   type FocusMode,
   type FocusSessionDto,
@@ -11,7 +10,6 @@ import {
 } from "@ember/shared";
 import {
   CheckCircle2,
-  ExternalLink,
   Headphones,
   Maximize2,
   Minimize2,
@@ -26,6 +24,8 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { FlameCompanion } from "./flame-companion";
+import { FlowTunesPanel } from "./flowtunes-panel";
+import { dispatchBrowserOrInAppReminder } from "./reminder-engine";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -302,11 +302,40 @@ export function FocusTimerWorkspace({
   const strokeDashoffset = circumference * (1 - progressRatio);
 
   const todayLabel = new Date().toLocaleDateString("en-CA", {
+    timeZone: preferences.timezone || "UTC",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
     weekday: "short",
   });
+
+  const completedAlertSentRef = React.useRef<string | null>(null);
+  React.useEffect(() => {
+    if (
+      !preferences.notificationsEnabled ||
+      !activeSession ||
+      activeSession.status !== "running" ||
+      plannedSeconds === null ||
+      remainingSeconds > 0
+    ) {
+      return;
+    }
+    if (completedAlertSentRef.current === activeSession.id) {
+      return;
+    }
+    completedAlertSentRef.current = activeSession.id;
+    dispatchBrowserOrInAppReminder(
+      {
+        id: "focus",
+        title: "Focus block elapsed",
+        body: "Your planned timer reached 00:00. Mark your session complete to record XP.",
+        href: "/focus",
+      },
+      (item) => {
+        window.dispatchEvent(new CustomEvent("ember-test-reminder", { detail: item }));
+      }
+    );
+  }, [activeSession, plannedSeconds, preferences.notificationsEnabled, remainingSeconds]);
 
   return (
     <div
@@ -333,17 +362,6 @@ export function FocusTimerWorkspace({
             >
               <Maximize2 className="h-4 w-4" />
               Ambient Focus
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <a
-                href="https://www.flowtunes.app/index.html"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Headphones className="h-4 w-4 text-flame-soft" />
-                FlowTunes
-                <ExternalLink className="h-3.5 w-3.5" />
-              </a>
             </Button>
           </div>
         </div>
@@ -666,35 +684,11 @@ export function FocusTimerWorkspace({
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="focus-soundscape">FlowTunes / Environment</Label>
-                  <div className="flex gap-2">
-                    <select
-                      id="focus-soundscape"
-                      value={soundscape}
-                      onChange={(e) =>
-                        setSoundscape(e.target.value as SoundscapePreference)
-                      }
-                      className="flex h-11 flex-1 rounded-xl border border-border-subtle bg-surface-elevated px-3 text-sm text-text-primary"
-                    >
-                      {SOUNDSCAPE_PREFERENCES.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                    <Button asChild variant="secondary">
-                      <a
-                        href="https://www.flowtunes.app/index.html"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Headphones className="h-4 w-4 text-flame-soft" />
-                        Open
-                      </a>
-                    </Button>
-                  </div>
-                </div>
+                <FlowTunesPanel
+                  soundscape={soundscape}
+                  onSoundscapeChange={setSoundscape}
+                  sessionActive={activeSession?.status === "running"}
+                />
 
                 <div className="space-y-1.5">
                   <Label htmlFor="focus-notes">Session Notes</Label>

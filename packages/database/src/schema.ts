@@ -424,10 +424,33 @@ export const userAchievements = pgTable(
   ]
 );
 
+/**
+ * Configurable user reminder schedules & quiet hours preferences.
+ */
+export const userReminderPreferences = pgTable("user_reminder_preferences", {
+  userId: uuid("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  notificationsEnabled: boolean("notifications_enabled").notNull().default(true),
+  focusReminderEnabled: boolean("focus_reminder_enabled").notNull().default(false),
+  focusReminderTime: text("focus_reminder_time").notNull().default("09:30"),
+  breakReminderEnabled: boolean("break_reminder_enabled").notNull().default(true),
+  breakIntervalMinutes: integer("break_interval_minutes").notNull().default(50),
+  dailyGoalReminderEnabled: boolean("daily_goal_reminder_enabled").notNull().default(false),
+  dailyGoalReminderTime: text("daily_goal_reminder_time").notNull().default("18:00"),
+  habitReminderEnabled: boolean("habit_reminder_enabled").notNull().default(false),
+  habitReminderTime: text("habit_reminder_time").notNull().default("20:00"),
+  quietHoursEnabled: boolean("quiet_hours_enabled").notNull().default(true),
+  quietHoursStart: text("quiet_hours_start").notNull().default("22:00"),
+  quietHoursEnd: text("quiet_hours_end").notNull().default("07:30"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
 export type DbUser = typeof users.$inferSelect;
 export type NewDbUser = typeof users.$inferInsert;
 export type DbUserPreferences = typeof userPreferences.$inferSelect;
 export type NewDbUserPreferences = typeof userPreferences.$inferInsert;
+export type DbUserReminderPreferences = typeof userReminderPreferences.$inferSelect;
 export type DbExtensionDevice = typeof extensionDevices.$inferSelect;
 export type DbDevicePairingCode = typeof devicePairingCodes.$inferSelect;
 export type DbWebsiteUsageDaily = typeof websiteUsageDaily.$inferSelect;
