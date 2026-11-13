@@ -85,7 +85,7 @@ export default async function LandingPage() {
             Foundation Release · Privacy-First Focus Platform
           </Badge>
 
-          <h1 className="text-3xl font-semibold tracking-tight text-text-primary sm:text-5xl lg:text-6xl leading-[1.1]">
+          <h1 className="text-3xl font-semibold tracking-[-0.03em] text-text-primary sm:text-5xl lg:text-6xl leading-[1.08]">
             Build consistent study habits without noise or gimmicks.
           </h1>
 

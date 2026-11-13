@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0B0C0E",
+  themeColor: "#0C0A09",
   width: "device-width",
   initialScale: 1,
 };
@@ -34,11 +34,11 @@ export default function RootLayout({
             appearance={{
               variables: {
                 colorPrimary: "#F97316",
-                colorBackground: "#131519",
-                colorInput: "#1A1D23",
-                colorInputForeground: "#F4F5F7",
-                colorForeground: "#F4F5F7",
-                colorMutedForeground: "#A1A7B4",
+                colorBackground: "#14110F",
+                colorInput: "#1C1815",
+                colorInputForeground: "#FAF4EB",
+                colorForeground: "#FAF4EB",
+                colorMutedForeground: "#B9AE9F",
                 borderRadius: "0.75rem",
               },
             }}

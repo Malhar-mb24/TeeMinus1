@@ -1,17 +1,18 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-canvas: #0b0c0e;
-  --color-surface: #131519;
-  --color-surface-elevated: #1a1d23;
-  --color-surface-hover: #22262e;
-  --color-border-subtle: #252932;
-  --color-border-strong: #353b48;
-  --color-text-primary: #f4f5f7;
-  --color-text-secondary: #a1a7b4;
-  --color-text-muted: #6f7685;
+  --color-canvas: #0c0a09;
+  --color-surface: #14110f;
+  --color-surface-elevated: #1c1815;
+  --color-surface-hover: #25201c;
+  --color-border-subtle: #2b2520;
+  --color-border-strong: #3d342c;
+  --color-text-primary: #faf4eb;
+  --color-text-secondary: #b9ae9f;
+  --color-text-muted: #7f7568;
   --color-flame: #f97316;
   --color-flame-soft: #fb923c;
+  --color-amber: #f59e0b;
   --color-emerald: #10b981;
   --color-sky: #38bdf8;
   --color-rose: #f43f5e;
@@ -129,4 +130,15 @@
 
 .animate-ember-spark {
   animation: ember-spark-rise 2s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ember-idle,
+  .animate-ember-happy,
+  .animate-ember-excited,
+  .animate-ember-celebrate,
+  .animate-ember-sleepy,
+  .animate-ember-spark {
+    animation: none;
+  }
 }

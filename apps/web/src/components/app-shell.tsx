@@ -68,12 +68,12 @@ export function AppShell({
   return (
     <div
       data-theme={theme}
-      className="min-h-dvh bg-canvas text-text-primary flex flex-col md:flex-row"
+      className="min-h-dvh bg-canvas text-text-primary flex flex-col md:flex-row overflow-x-hidden"
     >
       {/* Desktop Sidebar Rail */}
       <aside
         aria-label="Primary navigation"
-        className="hidden md:flex md:w-64 shrink-0 flex-col border-r border-border-subtle bg-surface/85 backdrop-blur-sm"
+        className="hidden md:flex md:w-64 shrink-0 flex-col border-r border-border-subtle/85 bg-surface/90 backdrop-blur-sm"
       >
         <div className="flex h-16 items-center justify-between border-b border-border-subtle px-5">
           <Link
@@ -203,17 +203,17 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-5 pb-24 sm:px-6 md:px-8 md:py-7 md:pb-10">
-          <div className="mx-auto w-full max-w-6xl">{children}</div>
+        <main className="min-w-0 flex-1 px-4 py-5 pb-24 sm:px-6 md:px-8 md:py-8 md:pb-12">
+          <div className="mx-auto w-full max-w-6xl min-w-0">{children}</div>
         </main>
       </div>
 
       {/* Mobile Bottom Navigation */}
       <nav
         aria-label="Mobile navigation"
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-border-subtle bg-surface/95 px-2 py-2 backdrop-blur-md md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-border-subtle/85 bg-surface/95 px-1.5 py-1.5 pb-[max(0.45rem,env(safe-area-inset-bottom))] backdrop-blur-md md:hidden"
       >
-        <div className="mx-auto flex max-w-lg items-center justify-around gap-1">
+        <div className="mx-auto flex w-full max-w-lg items-center justify-around gap-0.5">
           {MOBILE_BOTTOM_TABS.map((item) => {
             const Icon = item.icon;
             const isActive = item.href ? pathname.startsWith(item.href) : false;
@@ -223,14 +223,14 @@ export function AppShell({
                 key={item.label}
                 href={item.href!}
                 className={cn(
-                  "flex min-h-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-1 text-[10px] font-medium transition-colors",
+                  "flex min-w-0 min-h-11 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 text-[10px] font-medium transition-colors",
                   isActive
-                    ? "bg-flame/15 text-flame-soft"
+                    ? "bg-flame/14 text-flame-soft"
                     : "text-text-secondary hover:text-text-primary"
                 )}
               >
-                <Icon className="h-4 w-4" />
-                <span>{item.mobileLabel}</span>
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{item.mobileLabel}</span>
               </Link>
             );
           })}

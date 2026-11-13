@@ -1,6 +1,7 @@
 "use client";
 
 import type { CompanionMood, CompanionStyle } from "@ember/shared";
+import * as React from "react";
 import { cn } from "@/lib/utils";
 
 interface FlameCompanionProps {
@@ -55,6 +56,7 @@ export function FlameCompanion({
   level,
   className,
 }: FlameCompanionProps) {
+  const gradId = React.useId();
   const palette = STYLE_PALETTES[styleVariant] ?? STYLE_PALETTES["classic-flame"];
   const dimensions =
     size === "sm" ? "h-12 w-12" : size === "lg" ? "h-24 w-24" : "h-16 w-16";
@@ -76,10 +78,10 @@ export function FlameCompanion({
     <div className={cn("flex items-center gap-4", className)}>
       <div
         className={cn(
-          "relative flex shrink-0 items-center justify-center rounded-2xl border border-border-subtle bg-surface-elevated/80 p-1.5",
+          "relative flex shrink-0 items-center justify-center rounded-2xl border border-flame/20 bg-[radial-gradient(circle_at_50%_68%,rgba(249,115,22,0.16),rgba(24,20,17,0.92))] p-1.5 shadow-[inset_0_1px_0_0_rgba(255,244,230,0.06)]",
           dimensions
         )}
-        style={{ boxShadow: `0 0 28px -8px ${palette.glow}` }}
+        style={{ boxShadow: `0 8px 24px -12px ${palette.glow}` }}
         aria-label={`Ember companion feeling ${mood}`}
       >
         <svg
@@ -90,7 +92,7 @@ export function FlameCompanion({
         >
           <defs>
             <linearGradient
-              id={`flame-outer-${styleVariant}`}
+              id={gradId}
               x1="32"
               y1="6"
               x2="32"
@@ -130,7 +132,7 @@ export function FlameCompanion({
           {/* Main 2D flame silhouette */}
           <path
             d="M32 6C32 6 46 17.5 46 31C46 34.4 44.8 37.3 42.9 39.6C44.3 36.8 44.7 33.9 43.6 31.2C41.8 35.8 37.8 38.4 33.9 39.8C33.9 39.8 36.4 34.5 34.1 29.4C32.5 26 29.8 23.8 29.8 23.8C29.8 23.8 30.6 29.1 27.9 33C25.3 36.6 22 38.4 22 43.6C22 50.8 27.7 56.2 34.8 55.9C43.1 55.6 50 48.9 50 39.9C50 27.1 37.5 13.7 32 6Z"
-            fill={`url(#flame-outer-${styleVariant})`}
+            fill={`url(#${gradId})`}
           />
 
           {/* Warm inner core */}

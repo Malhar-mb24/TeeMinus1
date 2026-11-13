@@ -23,37 +23,37 @@ export function WeeklyFocusChart({
   height = 210,
 }: WeeklyFocusChartProps) {
   return (
-    <div style={{ width: "100%", height }}>
+    <div className="min-w-0 w-full" style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={buckets}
-          margin={{ top: 8, right: 4, left: -18, bottom: 0 }}
+          margin={{ top: 8, right: 4, left: -4, bottom: 0 }}
         >
           <XAxis
             dataKey="label"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#8E95A2", fontSize: 12 }}
+            tick={{ fill: "#9B8F80", fontSize: 12 }}
           />
           <YAxis
             orientation="right"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#6F7685", fontSize: 11 }}
+            tick={{ fill: "#7F7568", fontSize: 11 }}
             tickFormatter={(val: number) => `${val}m`}
           />
           <Tooltip
-            cursor={{ fill: "rgba(255,255,255,0.03)" }}
+            cursor={{ fill: "rgba(250,244,235,0.03)" }}
             contentStyle={{
-              backgroundColor: "#131519",
-              borderColor: "#252932",
+              backgroundColor: "#14110F",
+              borderColor: "#2B2520",
               borderRadius: "12px",
-              color: "#F4F5F7",
+              color: "#FAF4EB",
               fontSize: "12px",
             }}
             formatter={(value: unknown) => [`${String(value ?? 0)} min`, "Focus"]}
           />
-          <Bar dataKey="focusMinutes" radius={[8, 8, 4, 4]} maxBarSize={44}>
+          <Bar dataKey="focusMinutes" radius={[8, 8, 4, 4]} maxBarSize={42}>
             {buckets.map((entry) => (
               <Cell
                 key={entry.localDate}
@@ -61,8 +61,8 @@ export function WeeklyFocusChart({
                   entry.localDate === todayDate
                     ? "#F97316"
                     : entry.focusMinutes > 0
-                      ? "#BAE6FD"
-                      : "#1F242D"
+                      ? "#8F7760"
+                      : "#221D19"
                 }
               />
             ))}

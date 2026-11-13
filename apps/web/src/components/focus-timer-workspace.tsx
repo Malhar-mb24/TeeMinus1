@@ -342,13 +342,15 @@ export function FocusTimerWorkspace({
       className={cn(
         "space-y-6",
         ambientMode &&
-          "fixed inset-0 z-50 flex flex-col items-center justify-center bg-[radial-gradient(circle_at_65%_40%,rgba(249,115,22,0.22),transparent_48%),#08090B] p-6"
+          "fixed inset-0 z-50 flex flex-col items-center justify-center bg-[radial-gradient(circle_at_50%_38%,rgba(249,115,22,0.18),transparent_55%),#0B0908] p-6"
       )}
     >
       {!ambientMode && (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Focus Timer</h1>
+            <h1 className="text-2xl font-semibold tracking-[-0.025em] text-text-primary">
+              Focus Timer
+            </h1>
             <p className="text-sm text-text-secondary">
               Timestamp-anchored sessions that recover cleanly across refreshes.
             </p>
@@ -418,14 +420,14 @@ export function FocusTimerWorkspace({
       <div className={cn("grid gap-6", !ambientMode && "lg:grid-cols-12")}>
         <Card
           className={cn(
-            "relative overflow-hidden",
+            "relative overflow-hidden bg-[radial-gradient(circle_at_50%_40%,rgba(249,115,22,0.08),transparent_68%)]",
             ambientMode
-              ? "w-full max-w-lg border-border-subtle/50 bg-surface/60 backdrop-blur-md"
+              ? "w-full max-w-lg border-border-subtle/50 bg-surface/65 backdrop-blur-md"
               : "lg:col-span-7"
           )}
         >
-          <CardContent className="flex flex-col items-center justify-center py-8 px-4 sm:px-6 space-y-6">
-            {/* Circular Dial (YPT Ref 5 inspired with radial ticks & subtle ring glow) */}
+          <CardContent className="flex flex-col items-center justify-center py-9 px-4 sm:px-6 space-y-6">
+            {/* Circular Dial with warm hearth ticks */}
             <div className="relative flex h-72 w-72 sm:h-80 sm:w-80 items-center justify-center">
               <svg
                 viewBox="0 0 280 280"
@@ -448,7 +450,7 @@ export function FocusTimerWorkspace({
                       y1={y1}
                       x2={x2}
                       y2={y2}
-                      stroke={idx % 5 === 0 ? "#475569" : "#252932"}
+                      stroke={idx % 5 === 0 ? "#52463B" : "#2A241E"}
                       strokeWidth={idx % 5 === 0 ? "1.6" : "1"}
                     />
                   );
@@ -460,7 +462,7 @@ export function FocusTimerWorkspace({
                   cy="140"
                   r={radius}
                   fill="none"
-                  stroke="#1F242D"
+                  stroke="#241F1A"
                   strokeWidth="8"
                 />
 
@@ -481,12 +483,12 @@ export function FocusTimerWorkspace({
 
               {/* Center Readout */}
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                <span className="text-xs font-medium tracking-wider text-text-muted">
+                <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-text-muted">
                   {todayLabel}
                 </span>
                 <div
                   data-testid="timer-display"
-                  className="mt-1 text-5xl sm:text-6xl font-bold tracking-tight text-text-primary tabular-nums"
+                  className="mt-1.5 text-5xl sm:text-7xl font-semibold tracking-[-0.03em] text-text-primary tabular-nums"
                 >
                   {formatTimerClock(displaySeconds)}
                 </div>

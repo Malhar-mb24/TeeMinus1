@@ -210,7 +210,7 @@ export function HabitsWorkspace({
       {/* Header + View Switcher (HabitKit Refs 2, 3, 7 inspired) */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Habits</h1>
+          <h1 className="text-2xl font-semibold tracking-[-0.025em] text-text-primary">Habits</h1>
           <p className="text-sm text-text-secondary">
             Track daily consistency, streaks, and multi-step routines in your timezone.
           </p>
@@ -500,7 +500,7 @@ export function HabitsWorkspace({
                 key={habit.id}
                 className="overflow-hidden border-border-subtle"
                 style={{
-                  background: `linear-gradient(180deg, ${habit.color}0D 0%, #131519 52%)`,
+                  background: `linear-gradient(180deg, ${habit.color}0D 0%, var(--color-surface) 52%)`,
                 }}
               >
                 <CardContent className="p-5 space-y-4">

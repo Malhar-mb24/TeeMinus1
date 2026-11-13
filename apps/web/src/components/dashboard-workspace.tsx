@@ -157,7 +157,7 @@ export function DashboardWorkspace({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="text-2xl font-semibold tracking-[-0.025em] text-text-primary">
               {displayName ? `Welcome back, ${displayName}` : "Today's Focus"}
             </h1>
             <Badge variant="flame" className="tabular-nums">
@@ -284,7 +284,7 @@ export function DashboardWorkspace({
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-3 border-flame/25 bg-[linear-gradient(180deg,rgba(249,115,22,0.08)_0%,#131519_65%)]">
+        <Card className="lg:col-span-3 border-flame/25 bg-[linear-gradient(180deg,rgba(249,115,22,0.11)_0%,var(--color-surface)_76%)]">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm">
               <Timer className="h-4 w-4 text-flame" />
@@ -296,8 +296,8 @@ export function DashboardWorkspace({
                 : `${preferences.pomodoroMinutes}m Pomodoro default`}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-3xl font-bold font-mono tabular-nums text-text-primary">
+          <CardContent className="space-y-3.5">
+            <p className="text-4xl font-semibold tracking-tight font-mono tabular-nums text-text-primary">
               {activeSession
                 ? `${String(Math.floor(activeElapsed / 60)).padStart(2, "0")}:${String(
                     activeElapsed % 60
@@ -350,7 +350,7 @@ export function DashboardWorkspace({
                   return (
                     <div
                       key={habit.id}
-                      className="flex items-center justify-between gap-3 rounded-xl border border-border-subtle bg-surface-elevated/60 px-3.5 py-2.5"
+                      className="flex items-center justify-between gap-3 rounded-xl border border-border-subtle/80 bg-surface-elevated/55 px-3.5 py-2.5 transition-colors hover:border-border-strong"
                     >
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium">{habit.title}</p>
@@ -408,7 +408,7 @@ export function DashboardWorkspace({
                 {todayTasks.map((task) => (
                   <div
                     key={task.id}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-border-subtle bg-surface-elevated/60 px-3.5 py-2.5"
+                    className="flex items-center justify-between gap-3 rounded-xl border border-border-subtle/80 bg-surface-elevated/55 px-3.5 py-2.5 transition-colors hover:border-border-strong"
                   >
                     <div className="flex min-w-0 items-center gap-3">
                       <span

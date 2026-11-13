@@ -237,7 +237,9 @@ export function TasksPlannerWorkspace({
       {/* Header + Date Navigator (Ref 4 inspired) */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Plans &amp; Tasks</h1>
+          <h1 className="text-2xl font-semibold tracking-[-0.025em] text-text-primary">
+            Plans &amp; Tasks
+          </h1>
           <p className="text-sm text-text-secondary">
             Organize study blocks and compare planned estimates against recorded focus.
           </p>

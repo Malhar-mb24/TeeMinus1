@@ -28,31 +28,31 @@ export function WellbeingTrendChart({
   }));
 
   return (
-    <div style={{ width: "100%", height }}>
+    <div className="min-w-0 w-full" style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData} margin={{ top: 10, right: 6, left: -16, bottom: 0 }}>
+        <BarChart data={chartData} margin={{ top: 10, right: 6, left: -4, bottom: 0 }}>
           <XAxis
             dataKey="dayLabel"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#8E95A2", fontSize: 12 }}
+            tick={{ fill: "#9B8F80", fontSize: 12 }}
           />
           <YAxis
             orientation="right"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#6F7685", fontSize: 11 }}
+            tick={{ fill: "#7F7568", fontSize: 11 }}
             tickFormatter={(val: number) =>
               val >= 60 ? `${Math.round((val / 60) * 10) / 10}h` : `${Math.round(val)}m`
             }
           />
           <Tooltip
-            cursor={{ fill: "rgba(255,255,255,0.03)" }}
+            cursor={{ fill: "rgba(250,244,235,0.03)" }}
             contentStyle={{
-              backgroundColor: "#131519",
-              borderColor: "#252932",
+              backgroundColor: "#14110F",
+              borderColor: "#2B2520",
               borderRadius: "12px",
-              color: "#F4F5F7",
+              color: "#FAF4EB",
               fontSize: "12px",
             }}
             formatter={(_value, _name, item) => {
@@ -76,8 +76,8 @@ export function WellbeingTrendChart({
                   entry.localDate === todayDate
                     ? "#F97316"
                     : entry.totalSeconds > 0
-                      ? "#BAE6FD"
-                      : "#1F242D"
+                      ? "#8F7760"
+                      : "#221D19"
                 }
               />
             ))}

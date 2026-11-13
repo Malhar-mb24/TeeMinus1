@@ -65,7 +65,7 @@ export function FlowTunesPanel({
   }
 
   return (
-    <div className="space-y-3 rounded-xl border border-border-subtle bg-surface-elevated/45 p-3.5">
+    <div className="space-y-3 border-t border-border-subtle/80 pt-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Headphones className="h-4 w-4 text-flame-soft" />

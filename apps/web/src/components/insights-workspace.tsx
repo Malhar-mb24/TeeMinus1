@@ -56,7 +56,7 @@ type InsightsViewTab = "daily" | "weekly" | "monthly";
 const HEATMAP_DAY_HEADERS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
 function getIntensityColor(minutes: number): string {
-  if (minutes <= 0) return "#1B1E24";
+  if (minutes <= 0) return "#1E1A16";
   if (minutes < 30) return "#7C2D12";
   if (minutes < 60) return "#C2410C";
   if (minutes < 120) return "#F97316";
@@ -128,7 +128,7 @@ export function InsightsWorkspace({
       {/* Header + View Switcher */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-[-0.025em] text-text-primary">
             Insights &amp; Progression
           </h1>
           <p className="text-sm text-text-secondary">

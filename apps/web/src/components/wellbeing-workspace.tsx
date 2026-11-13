@@ -235,7 +235,7 @@ export function WellbeingWorkspace({ initialSummary }: WellbeingWorkspaceProps) 
       {/* Header + Consent Toggle */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
+          <h1 className="text-2xl font-semibold tracking-[-0.025em] text-text-primary">
             Digital Wellbeing
           </h1>
           <p className="text-sm text-text-secondary">
@@ -577,7 +577,7 @@ export function WellbeingWorkspace({ initialSummary }: WellbeingWorkspaceProps) 
           <CardContent className="space-y-4">
             <div className="flex flex-wrap gap-2">
               <Button
-                variant="primary"
+                variant="ember"
                 size="sm"
                 onClick={() => void handleGeneratePairingCode("chrome_extension")}
                 disabled={busyAction === "pair-chrome_extension"}
