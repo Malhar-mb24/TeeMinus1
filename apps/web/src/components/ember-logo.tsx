@@ -36,9 +36,9 @@ export function EmberLogo({ compact = false, className }: EmberLogoProps) {
               y2="20"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stopColor="#FDBA74" />
-              <stop offset="0.55" stopColor="#F97316" />
-              <stop offset="1" stopColor="#EA580C" />
+              <stop stopColor="#FFB45C" />
+              <stop offset="0.55" stopColor="#F36B2B" />
+              <stop offset="1" stopColor="#B94716" />
             </linearGradient>
           </defs>
         </svg>

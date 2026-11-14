@@ -1,7 +1,15 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { getEnvReadiness } from "@ember/shared";
 import type { Metadata, Viewport } from "next";
+import { Poppins } from "next/font/google";
 import "./globals.css";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -13,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0C0A09",
+  themeColor: "#160B07",
   width: "device-width",
   initialScale: 1,
 };
@@ -26,20 +34,20 @@ export default function RootLayout({
   const readiness = getEnvReadiness(process.env);
 
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-dvh bg-canvas text-text-primary antialiased">
+    <html lang="en" className={`dark ${poppins.variable}`}>
+      <body className="min-h-dvh bg-canvas text-text-primary font-sans antialiased">
         {readiness.clerkPublishableConfigured ? (
           <ClerkProvider
             publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
             appearance={{
               variables: {
-                colorPrimary: "#F97316",
-                colorBackground: "#14110F",
-                colorInput: "#1C1815",
-                colorInputForeground: "#FAF4EB",
-                colorForeground: "#FAF4EB",
-                colorMutedForeground: "#B9AE9F",
-                borderRadius: "0.75rem",
+                colorPrimary: "#F36B2B",
+                colorBackground: "#171311",
+                colorInput: "#241812",
+                colorInputForeground: "#FFF3E7",
+                colorForeground: "#FFF3E7",
+                colorMutedForeground: "#CBB9AA",
+                borderRadius: "0.85rem",
               },
             }}
           >

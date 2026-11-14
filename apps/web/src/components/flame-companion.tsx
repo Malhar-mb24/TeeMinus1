@@ -18,25 +18,25 @@ const STYLE_PALETTES: Record<
   { outerTop: string; outerMid: string; outerBottom: string; core: string; glow: string }
 > = {
   "classic-flame": {
-    outerTop: "#FDBA74",
-    outerMid: "#F97316",
-    outerBottom: "#EA580C",
-    core: "#FEF08A",
-    glow: "rgba(249, 115, 22, 0.28)",
+    outerTop: "#FFB45C",
+    outerMid: "#F36B2B",
+    outerBottom: "#B94716",
+    core: "#FFF3E7",
+    glow: "rgba(243, 107, 43, 0.38)",
   },
   "ember-spark": {
-    outerTop: "#FDE047",
-    outerMid: "#FB923C",
-    outerBottom: "#E11D48",
-    core: "#FFFBEB",
-    glow: "rgba(251, 146, 60, 0.34)",
+    outerTop: "#FFD166",
+    outerMid: "#FF884D",
+    outerBottom: "#D9381E",
+    core: "#FFFBF0",
+    glow: "rgba(255, 136, 77, 0.4)",
   },
   "calm-hearth": {
     outerTop: "#7DD3FC",
     outerMid: "#38BDF8",
-    outerBottom: "#F97316",
-    core: "#E0F2FE",
-    glow: "rgba(56, 189, 248, 0.25)",
+    outerBottom: "#F36B2B",
+    core: "#F0F9FF",
+    glow: "rgba(56, 189, 248, 0.3)",
   },
 };
 

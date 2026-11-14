@@ -435,6 +435,12 @@ export function FocusTimerWorkspace({
                 aria-hidden="true"
               >
                 {/* Radial ticks */}
+                <defs>
+                  <linearGradient id="focus-dial-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#FFB45C" />
+                    <stop offset="100%" stopColor="#F36B2B" />
+                  </linearGradient>
+                </defs>
                 {Array.from({ length: 60 }).map((_, idx) => {
                   const angle = (idx / 60) * Math.PI * 2;
                   const inner = idx % 5 === 0 ? 128 : 131;
@@ -450,7 +456,7 @@ export function FocusTimerWorkspace({
                       y1={y1}
                       x2={x2}
                       y2={y2}
-                      stroke={idx % 5 === 0 ? "#52463B" : "#2A241E"}
+                      stroke={idx % 5 === 0 ? "#FFB45C" : "#3A271E"}
                       strokeWidth={idx % 5 === 0 ? "1.6" : "1"}
                     />
                   );
@@ -462,7 +468,7 @@ export function FocusTimerWorkspace({
                   cy="140"
                   r={radius}
                   fill="none"
-                  stroke="#241F1A"
+                  stroke="#2A1B15"
                   strokeWidth="8"
                 />
 
@@ -472,7 +478,7 @@ export function FocusTimerWorkspace({
                   cy="140"
                   r={radius}
                   fill="none"
-                  stroke={isBreak ? "#38BDF8" : "#F97316"}
+                  stroke={isBreak ? "#38BDF8" : "url(#focus-dial-grad)"}
                   strokeWidth="8"
                   strokeLinecap="round"
                   strokeDasharray={circumference}

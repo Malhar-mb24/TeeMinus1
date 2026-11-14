@@ -116,9 +116,9 @@ export function AppShell({
                 key={item.label}
                 href={item.href}
                 className={cn(
-                  "flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                  "flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
                   isActive
-                    ? "bg-flame/15 text-flame-soft border border-flame/25"
+                    ? "bg-gradient-to-r from-flame/18 to-flame/8 text-flame-soft border border-flame/35 shadow-[inset_0_1px_0_0_rgba(255,243,231,0.08)]"
                     : "text-text-secondary hover:bg-surface-elevated hover:text-text-primary border border-transparent"
                 )}
               >
@@ -127,7 +127,7 @@ export function AppShell({
                   <span>{item.label}</span>
                 </span>
                 {isActive && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-flame" aria-hidden="true" />
+                  <span className="h-2 w-2 rounded-full bg-flame shadow-[0_0_8px_#F36B2B]" aria-hidden="true" />
                 )}
               </Link>
             );
@@ -223,9 +223,9 @@ export function AppShell({
                 key={item.label}
                 href={item.href!}
                 className={cn(
-                  "flex min-w-0 min-h-11 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 text-[10px] font-medium transition-colors",
+                  "flex min-w-0 min-h-11 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 text-[10px] font-medium transition-all duration-150",
                   isActive
-                    ? "bg-flame/14 text-flame-soft"
+                    ? "bg-flame/15 text-flame-soft border border-flame/30"
                     : "text-text-secondary hover:text-text-primary"
                 )}
               >

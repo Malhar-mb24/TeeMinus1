@@ -47,12 +47,12 @@ export function WellbeingTrendChart({
             }
           />
           <Tooltip
-            cursor={{ fill: "rgba(250,244,235,0.03)" }}
+            cursor={{ fill: "rgba(255,243,231,0.04)" }}
             contentStyle={{
-              backgroundColor: "#14110F",
-              borderColor: "#2B2520",
+              backgroundColor: "#171311",
+              borderColor: "#3A271E",
               borderRadius: "12px",
-              color: "#FAF4EB",
+              color: "#FFF3E7",
               fontSize: "12px",
             }}
             formatter={(_value, _name, item) => {
@@ -74,10 +74,10 @@ export function WellbeingTrendChart({
                 key={entry.localDate}
                 fill={
                   entry.localDate === todayDate
-                    ? "#F97316"
+                    ? "#F36B2B"
                     : entry.totalSeconds > 0
-                      ? "#8F7760"
-                      : "#221D19"
+                      ? "#A87C58"
+                      : "#2A1B15"
                 }
               />
             ))}

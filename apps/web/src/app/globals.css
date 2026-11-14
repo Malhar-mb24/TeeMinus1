@@ -1,22 +1,26 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-canvas: #0c0a09;
-  --color-surface: #14110f;
-  --color-surface-elevated: #1c1815;
-  --color-surface-hover: #25201c;
-  --color-border-subtle: #2b2520;
-  --color-border-strong: #3d342c;
-  --color-text-primary: #faf4eb;
-  --color-text-secondary: #b9ae9f;
-  --color-text-muted: #7f7568;
-  --color-flame: #f97316;
-  --color-flame-soft: #fb923c;
-  --color-amber: #f59e0b;
+  --color-canvas: #160b07;
+  --color-surface: #171311;
+  --color-surface-elevated: #241812;
+  --color-surface-hover: #2a1b15;
+  --color-border-subtle: #3a271e;
+  --color-border-strong: #54392c;
+  --color-text-primary: #fff3e7;
+  --color-text-secondary: #cbb9aa;
+  --color-text-muted: #8c7b6d;
+  --color-flame: #f36b2b;
+  --color-flame-soft: #ff884d;
+  --color-flame-burnt: #b94716;
+  --color-amber: #ffb45c;
+  --color-espresso: #160b07;
+  --color-charcoal: #171311;
+  --color-warm-brown: #2a1b15;
   --color-emerald: #10b981;
   --color-sky: #38bdf8;
   --color-rose: #f43f5e;
-  --font-sans: "Inter", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  --font-sans: var(--font-poppins, "Poppins"), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     monospace;
@@ -41,19 +45,19 @@
 }
 
 [data-theme="obsidian"] {
-  --color-canvas: #050507;
-  --color-surface: #0b0c10;
-  --color-surface-elevated: #12141a;
-  --color-surface-hover: #1a1d24;
-  --color-border-subtle: #1f222a;
+  --color-canvas: #090605;
+  --color-surface: #110e0c;
+  --color-surface-elevated: #1a1411;
+  --color-surface-hover: #231b17;
+  --color-border-subtle: #2d221c;
 }
 
 [data-theme="slate"] {
-  --color-canvas: #0d131a;
-  --color-surface: #141c26;
-  --color-surface-elevated: #1b2532;
-  --color-surface-hover: #233040;
-  --color-border-subtle: #273446;
+  --color-canvas: #100f12;
+  --color-surface: #17151a;
+  --color-surface-elevated: #221f28;
+  --color-surface-hover: #2c2935;
+  --color-border-subtle: #393444;
 }
 
 .tabular-nums {

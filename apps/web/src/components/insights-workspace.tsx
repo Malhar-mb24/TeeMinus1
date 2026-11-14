@@ -56,11 +56,11 @@ type InsightsViewTab = "daily" | "weekly" | "monthly";
 const HEATMAP_DAY_HEADERS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
 function getIntensityColor(minutes: number): string {
-  if (minutes <= 0) return "#1E1A16";
-  if (minutes < 30) return "#7C2D12";
-  if (minutes < 60) return "#C2410C";
-  if (minutes < 120) return "#F97316";
-  return "#FDBA74";
+  if (minutes <= 0) return "#241812";
+  if (minutes < 30) return "#8C3510";
+  if (minutes < 60) return "#B94716";
+  if (minutes < 120) return "#F36B2B";
+  return "#FFB45C";
 }
 
 function formatIsoClock(iso: string, timezone: string): string {

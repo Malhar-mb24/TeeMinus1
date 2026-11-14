@@ -9,11 +9,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         ember:
-          "bg-gradient-to-b from-flame to-[#E25F12] text-[#140C07] font-semibold hover:from-flame-soft hover:to-flame shadow-[0_8px_20px_-10px_rgba(249,115,22,0.55),inset_0_1px_0_0_rgba(255,237,213,0.3)]",
+          "bg-gradient-to-b from-[#FFB45C] via-flame to-flame-burnt text-[#160B07] font-semibold hover:brightness-105 shadow-[0_10px_25px_-10px_rgba(243,107,43,0.6),inset_0_1px_0_0_rgba(255,243,231,0.4)] border border-amber/30",
         primary:
-          "bg-text-primary text-canvas font-semibold hover:bg-[#FFF9F0]",
+          "bg-text-primary text-canvas font-semibold hover:bg-[#FFF3E7] shadow-sm",
         secondary:
-          "bg-surface-elevated text-text-primary border border-border-subtle hover:bg-surface-hover hover:border-border-strong",
+          "bg-surface-elevated text-text-primary border border-border-subtle hover:bg-surface-hover hover:border-border-strong shadow-[inset_0_1px_0_0_rgba(255,243,231,0.04)]",
         outline:
           "border border-border-subtle bg-transparent text-text-primary hover:bg-surface-elevated/80 hover:border-border-strong",
         ghost:

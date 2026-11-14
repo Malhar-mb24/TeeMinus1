@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { FlameCompanion } from "./flame-companion";
+import { EmberSanctuaryWorld } from "./ember-sanctuary-world";
 import { computeClientElapsedSeconds } from "./focus-timer-workspace";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -216,6 +217,21 @@ export function DashboardWorkspace({
           {actionError}
         </div>
       )}
+
+      {/* The Ember Personal World — Interactive Threeui Amber House Sanctuary */}
+      <section aria-labelledby="sanctuary-world-heading" className="space-y-2">
+        <h2 id="sanctuary-world-heading" className="sr-only">
+          The Ember Sanctuary World
+        </h2>
+        <EmberSanctuaryWorld
+          analytics={analytics}
+          gamification={gamification}
+          activeSession={activeSession}
+          tasks={tasks}
+          habits={habits}
+          preferences={preferences}
+        />
+      </section>
 
       {/* Top Bento Row: Companion + Daily Focus Progress + Quick Timer Card */}
       <div className="grid gap-4 lg:grid-cols-12">
